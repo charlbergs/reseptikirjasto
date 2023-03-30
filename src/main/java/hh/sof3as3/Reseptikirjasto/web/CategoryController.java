@@ -19,10 +19,10 @@ public class CategoryController {
 	
 	// todo: kategorioiden lisäys, muokkaus, poisto
 	
-	// tulostustesti
+	// listausnäkymä
 	@GetMapping("/categorylist")
 	public String getIndex(Model model) {
-		// luodaan lista ja lisätään testikategoriat
+		// haetaan tietokantaan tallennetut kategoriat listalle
 		List<Category> categories = (List<Category>) categoryRepository.findAll();
 		// välitetään templatelle
 		model.addAttribute("categories", categories);

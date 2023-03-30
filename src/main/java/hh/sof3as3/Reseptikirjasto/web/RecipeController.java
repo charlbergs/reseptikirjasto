@@ -19,7 +19,7 @@ public class RecipeController {
 	
 	// todo: - reseptien lisäys, muokkaus, poisto
 	
-	// tulostustesti
+	// listausnäkymä
 	@GetMapping("/recipelist")
 	public String getIndex(Model model) {
 		// haetaan tietokantaan tallennetut reseptit listalle
