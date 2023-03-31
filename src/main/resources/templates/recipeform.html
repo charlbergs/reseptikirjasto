@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Reseptikirjasto</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<style>
+		input[type='number'] {
+    		width: 45px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Lisää uusi resepti</h1>
+	<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
+		<!-- id-arvo piilotettuna jotta saadaan kuljetettua mukana -->
+		<input type="hidden" th:field="${recipe.id}"/>
+		<p>
+			<label>Nimi: </label>
+			<input type="text" size="45" th:field="${recipe.name}" required />
+		</p>
+		<p>
+			<label>Annosmäärä: </label>
+			<input type="number" th:field="${recipe.numberOfServings}" required />
+			<!-- todo: muuta valinta x h x min -->
+			<label>Valmistusaika (minuuttia): </label>
+			<input type="number" step="5" th:field="${recipe.time}" required />
+		</p>
+		<p><label>Ainesosat: </label></p>
+		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.listOfIngredients}" required></textarea></p>
+		<p><label>Valmistusohjeet: </label></p>
+		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.instructions}" required></textarea></p>
+		<input type="submit" value="Tallenna"/> <input type="reset" value="Tyhjennä" /> 
+	</form>
+</body>
+</html>

@@ -28,4 +28,5 @@ public class CategoryController {
 		model.addAttribute("categories", categories);
 		return "categorylist";
 	}
+	
 }

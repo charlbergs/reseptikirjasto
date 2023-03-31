@@ -18,6 +18,7 @@
 </head>
 <body>
 	<h1>Reseptikirjasto</h1>
+	<a href="/addrecipe">Lisää</a>
 	<table>
 		<tr>
 			<th>Nimi</th>
@@ -25,6 +26,8 @@
 			<th>Valmistusohjeet</th>
 			<th>Annosmäärä</th>
 			<th>Aika</th>
+			<th></th>
+			<th></th>
 		</tr>
 		<tr th:each="recipe : ${recipes}">
 			<td th:text="${recipe.name}" />
@@ -32,6 +35,8 @@
 			<td style="white-space:pre-wrap" th:text="${recipe.instructions}" />
 			<td th:text="${recipe.numberOfServings}" />
 			<td><span th:text="${recipe.time}"></span> minuuttia</td>
+			<td><a th:href="@{/edit/{id}(id=${recipe.id})}">Muokkaa</a></td>
+			<td><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
 		</tr>
 	</table>
 
