@@ -1,5 +1,7 @@
 package hh.sof3as3.Reseptikirjasto;
 
+import java.sql.Timestamp;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,8 +9,12 @@ import org.springframework.context.annotation.Bean;
 
 import hh.sof3as3.Reseptikirjasto.domain.Category;
 import hh.sof3as3.Reseptikirjasto.domain.CategoryRepository;
+import hh.sof3as3.Reseptikirjasto.domain.Comment;
+import hh.sof3as3.Reseptikirjasto.domain.CommentRepository;
 import hh.sof3as3.Reseptikirjasto.domain.Recipe;
 import hh.sof3as3.Reseptikirjasto.domain.RecipeRepository;
+import hh.sof3as3.Reseptikirjasto.domain.User;
+import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
 
 @SpringBootApplication
 public class ReseptikirjastoApplication {
@@ -19,8 +25,16 @@ public class ReseptikirjastoApplication {
 	
 	// luodaan commandlinerunnerilla tietokantaan testidataa
 	@Bean
-	public CommandLineRunner demo (RecipeRepository recipeRepository, CategoryRepository categoryRepository) {
+	public CommandLineRunner demo (RecipeRepository recipeRepository, CategoryRepository categoryRepository, UserRepository userRepository, CommentRepository commentRepository) {
 		return (args) -> {
+			
+			// testikäyttäjät
+			User admin = new User("Admin");
+			User user1 = new User("Superkokki79");
+			User user2 = new User("Leipuri_leila");
+			userRepository.save(admin);
+			userRepository.save(user1);
+			userRepository.save(user2);
 			
 			// testikategoriat
 			Category categ1 = new Category("Jälkiruoat", "#2596be");
@@ -105,6 +119,12 @@ public class ReseptikirjastoApplication {
 			recipeRepository.save(rec3);
 			recipeRepository.save(rec4);
 			
+			// testikommentit & timestamp
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			Comment comment1 = new Comment("Jee hyvää", timestamp);
+			commentRepository.save(comment1);
+			Comment comment2 = new Comment("Lempiruokaani", new Timestamp(System.currentTimeMillis()));
+			commentRepository.save(comment2);
 	
 		};
 	}
