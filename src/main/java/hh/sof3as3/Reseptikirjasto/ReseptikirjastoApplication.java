@@ -40,7 +40,8 @@ public class ReseptikirjastoApplication {
 				+ "- öljyä paistamiseen", 
 				"1. Sekoita ainekset. \n"
 				+ "2. Paista pannulla. \n"
-				+ "3. Syö."
+				+ "3. Syö.",
+				categ2
 			);
 			Recipe rec2 = new Recipe(
 				"Kasvissosekeitto", 4, 30,
@@ -56,7 +57,8 @@ public class ReseptikirjastoApplication {
 				"1. Kuori ja paloittele porkkanat ja perunat. Hienonna sipuli. \n"
 				+ "2. Kuullota kasvikset öljyssä kattilassa. \n"
 				+ "3. Lisää vesi ja liemikuutio. Keitä kunnes kasvikset pehmenevät.\n"
-				+ "4. Soseuta sileäksi sauvasekoittimella. Lisää kerma, ja mausta inkiväärillä ja chilillä." 
+				+ "4. Soseuta sileäksi sauvasekoittimella. Lisää kerma, ja mausta inkiväärillä ja chilillä.",
+				categ3
 			);
 			Recipe rec3 = new Recipe(
 				"Mustikkapiirakka kermaviilillä", 8, 45,
@@ -78,7 +80,8 @@ public class ReseptikirjastoApplication {
 				+ "3. Lisää jauhot munasokerivoi-seokseen, ja painele taikina voideltuun piirakkavuokaan.\n"
 				+ "4. Sekoita täytettä varten kananmuna, kermaviili ja sokerit.\n"
 				+ "5. Ripottele mustikat vuokaan, ja valuta sitten kermaviiliseos niiden päälle.\n"
-				+ "6. Laita uuniin ja paista alatasolla 200 asteessa n. 30 minuuttia."
+				+ "6. Laita uuniin ja paista alatasolla 200 asteessa n. 30 minuuttia.",
+				categ1
 			);
 			Recipe rec4 = new Recipe(
 				"Letut", 10, 180, 
@@ -93,7 +96,8 @@ public class ReseptikirjastoApplication {
 				"1. Vatkaa munat ja n. puolet maidosta kulhossa. Lisää jauhot, sokeri ja suola koko ajan sekoittaen. \n"
 				+ "2. Lisää loput maidosta. Anna taikinan turvota puoli tuntia huoneenlämmössä. \n"
 				+ "4. Kuumenna pannu, ja paista letut rasvassa molemmilta puolilta. Mikäli letut ruskistuvat liikaa, vähennä lämpöä. Jos taas letut jäävät keskeltä paksuiksi ja vaaleiksi, kannattaa taikinaa annostella vähemmän.\n"
-				+ "5. Tarjoa haluamasi täytteen kanssa. Jos haluat täyttää letut suolaisella täytteellä, voi taikinasta myös jättää sokerin pois.\n"
+				+ "5. Tarjoa haluamasi täytteen kanssa. Jos haluat täyttää letut suolaisella täytteellä, voi taikinasta myös jättää sokerin pois.\n",
+				categ1
 			);
 			// tallennetaan repositorioon
 			recipeRepository.save(rec1);

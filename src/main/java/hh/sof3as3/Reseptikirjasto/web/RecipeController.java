@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import hh.sof3as3.Reseptikirjasto.domain.CategoryRepository;
 import hh.sof3as3.Reseptikirjasto.domain.Recipe;
 import hh.sof3as3.Reseptikirjasto.domain.RecipeRepository;
 
@@ -18,6 +19,8 @@ public class RecipeController {
 	// repositoriot
 	@Autowired
 	private RecipeRepository recipeRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	// listausnäkymä
 	@GetMapping("/recipelist")
@@ -33,13 +36,15 @@ public class RecipeController {
 	@GetMapping("/addrecipe")
 	public String addNewRecipe(Model model) {
 		model.addAttribute("recipe", new Recipe()); // välitetään templatelle tyhjä reseptiolio tallentamista varten
+		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
 		return "recipeform";
 	}
 	
 	// reseptin muokkaus: get
 	@GetMapping("/edit/{id}")
 	public String editRecipe(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("recipe", recipeRepository.findById(id).get());
+		model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
+		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
 		return "recipeform"; // uudelleenohjataan listausnäkymään
 	}
 	

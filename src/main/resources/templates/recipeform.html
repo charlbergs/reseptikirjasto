@@ -19,6 +19,10 @@
 			<input type="text" size="45" th:field="${recipe.name}" required />
 		</p>
 		<p>
+			<label for="categorylist">Kategoria: </label>
+			<select id="categorylist" th:field="*{category}">
+				<option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+			</select>
 			<label>Annosmäärä: </label>
 			<input type="number" th:field="${recipe.numberOfServings}" required />
 			<!-- todo: muuta valinta x h x min -->

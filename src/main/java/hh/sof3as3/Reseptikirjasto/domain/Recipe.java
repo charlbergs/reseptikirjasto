@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Recipe {
@@ -18,6 +20,10 @@ public class Recipe {
 	private int time; // valmistusaika minuutteina
 	@Column(length=1000) private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
 	@Column(length=1000) private String instructions; // valmistusohjeet
+	// viiteavainattribuutti kategorialle
+	@ManyToOne
+	@JoinColumn(name="categoryid")
+	private Category category;
 	
 	// konstruktorit
 	public Recipe() {
@@ -26,13 +32,15 @@ public class Recipe {
 		this.time = 0;
 		this.listOfIngredients = null;
 		this.instructions = null;
+		this.category = null;
 	}
-	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions) {
+	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category) {
 		this.name = name;
 		this.numberOfServings = numberOfServings;
 		this.time = time;
 		this.listOfIngredients = listOfIngredients;
 		this.instructions = instructions;
+		this.category = category;
 	}
 	
 	// getterit ja setterit
@@ -72,12 +80,19 @@ public class Recipe {
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	
 	// toString
 	@Override
 	public String toString() {
 		return "id=" + id + ", name=" + name + ", numberOfServings=" + numberOfServings + ", time=" + time
-				+ ", listOfIngredients=" + listOfIngredients + ", instructions=" + instructions;
+				+ ", listOfIngredients=" + listOfIngredients + ", instructions=" + instructions 
+				+ ", category=" + category.getName();
 	}
 	
 
