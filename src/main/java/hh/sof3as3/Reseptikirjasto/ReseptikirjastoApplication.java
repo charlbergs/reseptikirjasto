@@ -29,9 +29,9 @@ public class ReseptikirjastoApplication {
 		return (args) -> {
 			
 			// testikäyttäjät
-			User admin = new User("Admin");
-			User user1 = new User("Superkokki79");
-			User user2 = new User("Leipuri_leila");
+			User admin = new User("Admin", null, "ADMIN");
+			User user1 = new User("Superkokki", null, "USER");
+			User user2 = new User("Leipuri_Leila", null, "USER");
 			userRepository.save(admin);
 			userRepository.save(user1);
 			userRepository.save(user2);
@@ -55,7 +55,7 @@ public class ReseptikirjastoApplication {
 				"1. Sekoita ainekset. \n"
 				+ "2. Paista pannulla. \n"
 				+ "3. Syö.",
-				categ2
+				categ2, user1
 			);
 			Recipe rec2 = new Recipe(
 				"Kasvissosekeitto", 4, 30,
@@ -72,7 +72,7 @@ public class ReseptikirjastoApplication {
 				+ "2. Kuullota kasvikset öljyssä kattilassa. \n"
 				+ "3. Lisää vesi ja liemikuutio. Keitä kunnes kasvikset pehmenevät.\n"
 				+ "4. Soseuta sileäksi sauvasekoittimella. Lisää kerma, ja mausta inkiväärillä ja chilillä.",
-				categ3
+				categ3, user1
 			);
 			Recipe rec3 = new Recipe(
 				"Mustikkapiirakka kermaviilillä", 8, 45,
@@ -95,7 +95,7 @@ public class ReseptikirjastoApplication {
 				+ "4. Sekoita täytettä varten kananmuna, kermaviili ja sokerit.\n"
 				+ "5. Ripottele mustikat vuokaan, ja valuta sitten kermaviiliseos niiden päälle.\n"
 				+ "6. Laita uuniin ja paista alatasolla 200 asteessa n. 30 minuuttia.",
-				categ1
+				categ1, user2
 			);
 			Recipe rec4 = new Recipe(
 				"Letut", 10, 180, 
@@ -111,7 +111,7 @@ public class ReseptikirjastoApplication {
 				+ "2. Lisää loput maidosta. Anna taikinan turvota puoli tuntia huoneenlämmössä. \n"
 				+ "4. Kuumenna pannu, ja paista letut rasvassa molemmilta puolilta. Mikäli letut ruskistuvat liikaa, vähennä lämpöä. Jos taas letut jäävät keskeltä paksuiksi ja vaaleiksi, kannattaa taikinaa annostella vähemmän.\n"
 				+ "5. Tarjoa haluamasi täytteen kanssa. Jos haluat täyttää letut suolaisella täytteellä, voi taikinasta myös jättää sokerin pois.\n",
-				categ1
+				categ1, user2
 			);
 			// tallennetaan repositorioon
 			recipeRepository.save(rec1);
@@ -120,10 +120,11 @@ public class ReseptikirjastoApplication {
 			recipeRepository.save(rec4);
 			
 			// testikommentit & timestamp
+			// huom. timestampit: System.currentTimeMillis antaa nykyhetken, Timestamp.valueOf määritellyn aikaleiman
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			Comment comment1 = new Comment("Jee hyvää", timestamp);
+			Comment comment1 = new Comment("Hyvä ohje!", timestamp, user1, rec3);
 			commentRepository.save(comment1);
-			Comment comment2 = new Comment("Lempiruokaani", new Timestamp(System.currentTimeMillis()));
+			Comment comment2 = new Comment("Lempiruokaani <3", Timestamp.valueOf("2023-04-01 09:01:15"), user2, rec2);
 			commentRepository.save(comment2);
 	
 		};

@@ -1,5 +1,8 @@
 package hh.sof3as3.Reseptikirjasto.domain;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Recipe {
@@ -24,6 +28,13 @@ public class Recipe {
 	@ManyToOne
 	@JoinColumn(name="categoryid")
 	private Category category;
+	// viiteavainattribuutti reseptin luoneelle käyttäjälle
+	@ManyToOne
+	@JoinColumn(name="userid")
+	private User user;
+	// viiteavainattribuutti kommenteille
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+	private List<Comment> comments;
 	
 	// konstruktorit
 	public Recipe() {
@@ -33,14 +44,16 @@ public class Recipe {
 		this.listOfIngredients = null;
 		this.instructions = null;
 		this.category = null;
+		this.user = null;
 	}
-	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category) {
+	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category, User user) {
 		this.name = name;
 		this.numberOfServings = numberOfServings;
 		this.time = time;
 		this.listOfIngredients = listOfIngredients;
 		this.instructions = instructions;
 		this.category = category;
+		this.user = user;
 	}
 	
 	// getterit ja setterit
@@ -86,13 +99,25 @@ public class Recipe {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public List<Comment> getComments() {
+		return comments;
+	}
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
 	
 	// toString
 	@Override
 	public String toString() {
 		return "id=" + id + ", name=" + name + ", numberOfServings=" + numberOfServings + ", time=" + time
 				+ ", listOfIngredients=" + listOfIngredients + ", instructions=" + instructions 
-				+ ", category=" + category.getName();
+				+ ", category=" + category.getName() + ", user=" + user.getUsername();
 	}
 	
 

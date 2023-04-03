@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Comment {
@@ -16,15 +18,27 @@ public class Comment {
 	private Long id;
 	private String message;
 	private Timestamp timestamp;
+	// viiteavainattribuutti käyttäjälle joka luo kommentin
+	@ManyToOne
+	@JoinColumn(name="userid")
+	private User user;
+	// viiteavainattribuutti reseptille
+	@ManyToOne
+	@JoinColumn(name="recipeid")
+	private Recipe recipe;
 
 	// konstruktorit
 	public Comment() {
 		this.message = null;
 		this.timestamp = null;
+		this.user = null;
+		this.recipe = null;
 	}
-	public Comment(String message, Timestamp timestamp) {
+	public Comment(String message, Timestamp timestamp, User user, Recipe recipe) {
 		this.message = message;
 		this.timestamp = timestamp;
+		this.user = user;
+		this.recipe = recipe;
 	}
 	
 	// getterit ja setterit
@@ -46,10 +60,22 @@ public class Comment {
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public Recipe getRecipe() {
+		return recipe;
+	}
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
+	}
 	
 	// toString
 	@Override
 	public String toString() {
-		return "Comment [id=" + id + ", message=" + message + ", timestamp=" + timestamp + "]";
+		return "id=" + id + ", message=" + message + ", timestamp=" + timestamp + ", user=" + user.getUsername() + ", recipe=" + recipe.getName();
 	}
 }

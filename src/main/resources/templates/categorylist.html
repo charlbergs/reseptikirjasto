@@ -4,24 +4,22 @@
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<style>
-		div.table {
-			display: table;
-			width: 33%;
-			
-		}
-		form.tr {
-			display: table-row;	
-		}
-		span.td {
-			display: table-cell;
+		td{
+			padding:3px;
 		}
 	</style>
 </head>
 <body>
 	<h1>Kategoriat</h1>	
-	
+	<!-- kategorian lisäys -->
+		<form id="addCategoryForm" method="post" action="#" th:action="@{/addcategory}" th:object="${newCategory}">
+			<input type="text" size="10" placeholder="kategorian nimi" th:field="${newCategory.name}" />
+			<input type="color" style="height:21px;width:20px" th:field="${newCategory.color}" />
+			<input type="submit" value="Lisää" />
+		</form>
+	<p/>
 	<!-- kategorialistaus -->
-	<table style="text-align:left;width:25%">
+	<table style="text-align:left">
 		<tr>
 			<th>Nimi</th>
 			<th>Väri</th>
@@ -31,14 +29,5 @@
 			<td th:text="${category.color}" th:bgcolor="${category.color}" />
 		</tr>
 	</table>
-	
-		<!-- kategorian lisäys -->
-	<div class="table">
-		<form class="tr" id="addCategoryForm" method="post" action="#" th:action="@{/addcategory}" th:object="${newCategory}">
-			<span class="td"><input type="text" size="10" placeholder="kategorian nimi" th:field="${newCategory.name}" /></span>
-			<span class="td"><input type="color" th:field="${newCategory.color}" /></span>
-			<input type="submit" value="Lisää" />
-		</form>
-	</div>
 </body>
 </html>

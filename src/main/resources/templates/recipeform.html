@@ -10,10 +10,11 @@
 	</style>
 </head>
 <body>
-	<h1>Lisää uusi resepti</h1>
+	<h1 th:text="${header}"></h1>
 	<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
-		<!-- id-arvo piilotettuna jotta saadaan kuljetettua mukana -->
+		<!-- id-arvo ja tekijä piilotettuna jotta saadaan kuljetettua mukana -->
 		<input type="hidden" th:field="${recipe.id}"/>
+		<input type="hidden" th:field="${recipe.user}"/>
 		<p>
 			<label>Nimi: </label>
 			<input type="text" size="45" th:field="${recipe.name}" required />
@@ -33,7 +34,7 @@
 		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.listOfIngredients}" required></textarea></p>
 		<p><label>Valmistusohjeet: </label></p>
 		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.instructions}" required></textarea></p>
-		<input type="submit" value="Tallenna"/> <input type="reset" value="Tyhjennä" /> 
+		<input type="submit" value="Tallenna"/> <input type="reset" value="Palauta" /> <input type="button" value="Takaisin" onclick="history.back()"> <!-- takaisin-nappi vie edelliselle sivulle -->
 	</form>
 </body>
 </html>
