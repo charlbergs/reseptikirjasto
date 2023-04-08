@@ -40,7 +40,7 @@
 			<td th:text="${recipe.numberOfServings}" />
 			<td th:text="|${recipe.time} minuuttia|" />
 			<td th:text="${recipe.category.name}" />
-			<td><a th:href="@{/edit/{id}(id=${recipe.id})}">Muokkaa</a></td>
+			<td><a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
 			<td><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
 		</tr>
 	</table>

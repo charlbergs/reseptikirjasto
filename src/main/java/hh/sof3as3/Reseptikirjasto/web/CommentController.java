@@ -11,28 +11,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import hh.sof3as3.Reseptikirjasto.domain.Comment;
 import hh.sof3as3.Reseptikirjasto.domain.CommentRepository;
 import hh.sof3as3.Reseptikirjasto.domain.Recipe;
+import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
 
 @Controller
 public class CommentController {
 	
 	@Autowired
 	private CommentRepository commentRepository;
+	@Autowired UserRepository userRepository;
 	
 	// kommentin lisäys
 	@PostMapping("/savecomment")
-	public String saveComment(Comment comment, Recipe recipe) {
+	public String saveComment(Comment comment) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		comment.setTimestamp(timestamp); // timestamp
-		comment.setRecipe(recipe);
+		comment.setTimestamp(timestamp); // asetetaan timestamp
 		commentRepository.save(comment);
-		return "redirect:/recipe/1"; // todo: vaihda
+		return "redirect:/recipe/" + comment.getRecipe().getId(); // uudelleenohjaus takaisin reseptinäkymään
 	}
 	
 	// kommentin poistaminen
-	@GetMapping("/deletecomment/{id}")
-	public String deletecomment(@PathVariable("id") Long id) {
-		commentRepository.deleteById(id);
-		return "redirect:/recipe/1"; // todo: vaihda
+	@GetMapping("/deletecomment/{recipeid}/{commentid}") // reseptin id redirectiä ja kommentin id kommentin poistamista varten
+	public String deletecomment(@PathVariable("recipeid") Long recipeid, @PathVariable("commentid") Long commentid) {
+		commentRepository.deleteById(commentid);
+		return "redirect:/recipe/" + recipeid; // uudelleenohjaus takaisin reseptinäkymään
 	}
 
 }

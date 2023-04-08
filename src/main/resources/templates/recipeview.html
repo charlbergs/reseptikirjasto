@@ -35,20 +35,19 @@
 		<h4>Valmistusohjeet:</h4>
 		<p style="white-space:pre-wrap" th:text="${recipe.instructions}" />
 		<p th:text="|reseptin luoja: ${recipe.user.username}|" />
-		<a th:href="@{/edit/{id}(id=${recipe.id})}">Muokkaa</a>
-		<a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a>
+		<a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a>
+		<a th:href="@{/deleterecipe/{id}(id=${recipe.id})}">Poista</a>
 		<!-- kommentit -->
 		<h4>Kommentit: </h4>
 		<div class="comment" th:each="comment : ${comments}">
-			<p th:text="|${comment.user.username} ${comment.timestamp}|"/> <!-- todo: formatoi timestamp -->
+			<p th:text="|${comment.commenter.username} ${comment.timestamp}|"/> <!-- todo: formatoi timestamp -->
 			<p th:text="${comment.message}"/>
-			<a th:href="@{/deletecomment/{id} (id=${comment.id})}">Poista</a>
+			<a th:href="@{/deletecomment/{recipeid}/{commentid} (recipeid=${recipe.id}, commentid=${comment.id})}">Poista</a>
 		</div>
-		<form id="commentform" method="post" action="#" th:action="@{/savecomment}" th:object="${comment}">
-			<!-- välitetään piilotetuilla fieldeillä controllerissa asetetut resepti ja user -->
-			<input type="hidden" th:field="${comment.recipe}" />
-			<input type="hidden" th:field="${comment.user}" />
-			<textarea form="commentform" cols="30" rows="3" th:field="${comment.message}"></textarea>
+		<form id="commentform" method="post" action="#" th:action="@{/savecomment}" th:object="${newComment}">
+			<input type="hidden" th:field="${newComment.commenter}" th:value="${newComment.commenter}" />
+			<input type="hidden" th:field="${newComment.recipe}" th:value="${newComment.recipe}" />
+			<textarea form="commentform" cols="30" rows="3" th:field="${newComment.message}"></textarea>
 			<input type="submit" value="Lisää" />
 		</form>
 	</div>

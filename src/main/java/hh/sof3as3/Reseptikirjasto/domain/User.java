@@ -27,7 +27,7 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Recipe> myRecipes;
 	// viiteavainattribuutti käyttäjän luomille kommenteille
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commenter")
 	private List<Comment> myComments;
 	
 	// konstruktorit

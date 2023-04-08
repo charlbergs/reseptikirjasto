@@ -21,7 +21,7 @@ public class Comment {
 	// viiteavainattribuutti käyttäjälle joka luo kommentin
 	@ManyToOne
 	@JoinColumn(name="userid")
-	private User user;
+	private User commenter;
 	// viiteavainattribuutti reseptille
 	@ManyToOne
 	@JoinColumn(name="recipeid")
@@ -31,13 +31,13 @@ public class Comment {
 	public Comment() {
 		this.message = null;
 		this.timestamp = null;
-		this.user = null;
+		this.commenter = null;
 		this.recipe = null;
 	}
-	public Comment(String message, Timestamp timestamp, User user, Recipe recipe) {
+	public Comment(String message, Timestamp timestamp, User commenter, Recipe recipe) {
 		this.message = message;
 		this.timestamp = timestamp;
-		this.user = user;
+		this.commenter = commenter;
 		this.recipe = recipe;
 	}
 	
@@ -60,11 +60,11 @@ public class Comment {
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
-	public User getUser() {
-		return user;
+	public User getCommenter() {
+		return commenter;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setCommenter(User commenter) {
+		this.commenter = commenter;
 	}
 	public Recipe getRecipe() {
 		return recipe;
@@ -76,6 +76,6 @@ public class Comment {
 	// toString
 	@Override
 	public String toString() {
-		return "id=" + id + ", message=" + message + ", timestamp=" + timestamp + ", user=" + user.getUsername() + ", recipe=" + recipe.getName();
+		return "id=" + id + ", message=" + message + ", timestamp=" + timestamp + ", commenter=" + commenter.getUsername() + ", recipe=" + recipe.getName();
 	}
 }

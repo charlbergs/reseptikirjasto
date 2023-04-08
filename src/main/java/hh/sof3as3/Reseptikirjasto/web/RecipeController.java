@@ -40,15 +40,18 @@ public class RecipeController {
 	}
 	
 	// yksittäisen reseptin katselunäkymä
-	@GetMapping("/recipe/{id}")
-	public String viewRecipe(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("recipe", recipeRepository.findById(id).get()); // välitetään valittu resepti templatelle
-		model.addAttribute("comments", commentRepository.findByRecipe(recipeRepository.findById(id).get())); // välitetään valitun reseptin kommentit templatelle
-		// välitetään tyhjä kommenttiolio uuden kommentin luomista varten
+	@GetMapping("/recipe/{recipeid}")
+	public String viewRecipe(@PathVariable("recipeid") Long recipeid, Model model) {
+		// välitetään valittu resepti templatelle
+		Recipe recipe = recipeRepository.findById(recipeid).get();
+		model.addAttribute("recipe", recipe);
+		// välitetään valitun reseptin kommentit
+		model.addAttribute("comments", commentRepository.findByRecipe(recipe));
+		// välitetään kommenttiolio uuden kommentin luomista varten
 		Comment comment = new Comment();
-		comment.setRecipe(recipeRepository.findById(id).get()); // asettaa valmiiksi kommentin resepti-attribuutiksi reseptinäkymän reseptin
-		comment.setUser(userRepository.findByUsername("Admin")); // tilapäisesti kaikki uudet kommentit adminin, todo: muuta niin että välitetään kirjautunut käyttäjä
-		model.addAttribute("comment", comment);
+		comment.setCommenter(userRepository.findByUsername("Admin")); // todo: asetetaan kirjautunut käyttäjä kommentoijaksi (nyt Admin)
+		comment.setRecipe(recipe); // asetetaan valittu resepti kommentin resepti-attribuutiksi
+		model.addAttribute("newComment", comment);
 		return "recipeview";
 	}
 	
@@ -62,7 +65,7 @@ public class RecipeController {
 	}
 	
 	// reseptin muokkaus: get
-	@GetMapping("/edit/{id}")
+	@GetMapping("/editrecipe/{id}")
 	public String editRecipe(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
 		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
@@ -74,14 +77,14 @@ public class RecipeController {
 	@PostMapping("/saverecipe")
 	public String postRecipeForm(Recipe recipe) {
 		recipeRepository.save(recipe);
-		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään
+		return "redirect:/recipe/" + recipe.getId(); // uudelleenohjataan reseptinäkymään
 	}
 	
 	// reseptin poistaminen
-	@GetMapping("/delete/{id}")
+	@GetMapping("/deleterecipe/{id}")
 	public String deleteRecipe(@PathVariable("id") Long id) {
 		recipeRepository.deleteById(id);
-		return "redirect:/recipelist";
+		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään
 	}
 
 }
