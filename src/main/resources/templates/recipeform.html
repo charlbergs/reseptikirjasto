@@ -14,7 +14,7 @@
 	<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
 		<!-- id-arvo ja tekijä piilotettuna jotta saadaan kuljetettua mukana -->
 		<input type="hidden" th:field="${recipe.id}"/>
-		<input type="hidden" th:field="${recipe.user}"/>
+		<input type="hidden" th:field="${recipe.author}"/>
 		<p>
 			<label>Nimi: </label>
 			<input type="text" size="45" th:field="${recipe.name}" required />

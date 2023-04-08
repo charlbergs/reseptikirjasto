@@ -2,6 +2,9 @@ package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,10 +22,12 @@ public class Comment {
 	private String message;
 	private Timestamp timestamp;
 	// viiteavainattribuutti käyttäjälle joka luo kommentin
+	@JsonIgnoreProperties({"password", "role", "myRecipes", "myComments"})
 	@ManyToOne
-	@JoinColumn(name="userid")
+	@JoinColumn(name="commenterid")
 	private User commenter;
 	// viiteavainattribuutti reseptille
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="recipeid")
 	private Recipe recipe;

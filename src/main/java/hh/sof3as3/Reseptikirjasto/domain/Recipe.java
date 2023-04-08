@@ -2,6 +2,9 @@ package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,14 +28,17 @@ public class Recipe {
 	@Column(length=1000) private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
 	@Column(length=1000) private String instructions; // valmistusohjeet
 	// viiteavainattribuutti kategorialle
+	@JsonIgnoreProperties({"color"})
 	@ManyToOne
 	@JoinColumn(name="categoryid")
 	private Category category;
-	// viiteavainattribuutti reseptin luoneelle käyttäjälle
+	// viiteavainattribuutti reseptin tekijälle
+	@JsonIgnoreProperties({"role", "myRecipes", "myComments"}) // blokataan tekijän myRecipes ja myComments jotta vältetään loputon loop
 	@ManyToOne
-	@JoinColumn(name="userid")
-	private User user;
+	@JoinColumn(name="authorid")
+	private User author;
 	// viiteavainattribuutti kommenteille
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
 	private List<Comment> comments;
 	
@@ -44,16 +50,16 @@ public class Recipe {
 		this.listOfIngredients = null;
 		this.instructions = null;
 		this.category = null;
-		this.user = null;
+		this.author = null;
 	}
-	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category, User user) {
+	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category, User author) {
 		this.name = name;
 		this.numberOfServings = numberOfServings;
 		this.time = time;
 		this.listOfIngredients = listOfIngredients;
 		this.instructions = instructions;
 		this.category = category;
-		this.user = user;
+		this.author = author;
 	}
 	
 	// getterit ja setterit
@@ -99,11 +105,11 @@ public class Recipe {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public User getUser() {
-		return user;
+	public User getAuthor() {
+		return author;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setAuthor(User author) {
+		this.author = author;
 	}
 	public List<Comment> getComments() {
 		return comments;
@@ -117,7 +123,7 @@ public class Recipe {
 	public String toString() {
 		return "id=" + id + ", name=" + name + ", numberOfServings=" + numberOfServings + ", time=" + time
 				+ ", listOfIngredients=" + listOfIngredients + ", instructions=" + instructions 
-				+ ", category=" + category.getName() + ", user=" + user.getUsername();
+				+ ", category=" + category.getName() + ", user=" + author.getUsername();
 	}
 	
 

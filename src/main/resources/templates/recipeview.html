@@ -27,6 +27,7 @@
 	<div class="frame" th:style="|border: 10px solid ${recipe.category.color}|">
 		<!-- resepti -->
 		<h3 th:text="${recipe.name}"></h3>
+		<p th:text="|reseptin tekijä: ${recipe.author.username}|" />
 		<p th:text="|kategoria: ${recipe.category.name}|" />
 		<p th:text="|annosmäärä: ${recipe.numberOfServings}|" />
 		<p th:text="|valmistusaika: ${recipe.time} minuuttia|" />
@@ -34,7 +35,6 @@
 		<p style="white-space:pre-wrap" th:text="${recipe.listOfIngredients}" />
 		<h4>Valmistusohjeet:</h4>
 		<p style="white-space:pre-wrap" th:text="${recipe.instructions}" />
-		<p th:text="|reseptin luoja: ${recipe.user.username}|" />
 		<a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a>
 		<a th:href="@{/deleterecipe/{id}(id=${recipe.id})}">Poista</a>
 		<!-- kommentit -->

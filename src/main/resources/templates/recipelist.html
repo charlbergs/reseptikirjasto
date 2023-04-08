@@ -25,21 +25,19 @@
 	<table>
 		<tr>
 			<th>Nimi</th>
-			<th>Ainesosat</th>
-			<th>Valmistusohjeet</th>
 			<th>Annosmäärä</th>
 			<th>Aika</th>
 			<th>Kategoria</th>
+			<th>Tekijä</th>
 			<th></th>
 			<th></th>
 		</tr>
 		<tr th:each="recipe : ${recipes}">
 			<td><a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}" ></a></td>
-			<td style="white-space:pre-wrap" th:text="${recipe.listOfIngredients}" />
-			<td style="white-space:pre-wrap" th:text="${recipe.instructions}" />
 			<td th:text="${recipe.numberOfServings}" />
 			<td th:text="|${recipe.time} minuuttia|" />
 			<td th:text="${recipe.category.name}" />
+			<td th:text="${recipe.author.username}" />
 			<td><a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
 			<td><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
 		</tr>

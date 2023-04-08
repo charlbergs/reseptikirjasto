@@ -58,7 +58,11 @@ public class RecipeController {
 	// reseptin lisäys: get
 	@GetMapping("/addrecipe")
 	public String addNewRecipe(Model model) {
-		model.addAttribute("recipe", new Recipe()); // välitetään templatelle tyhjä reseptiolio tallentamista varten
+		// välitetään templatelle tyhjä reseptiolio tallentamista varten
+		Recipe recipe = new Recipe();
+		recipe.setAuthor(userRepository.findByUsername("Admin")); // todo: asetetaan tekijäksi kirjautunut user
+		model.addAttribute("recipe", recipe);
+		
 		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
 		model.addAttribute("header", "Uusi resepti"); // välitetään välitetään oikea otsikko lomakkeelle
 		return "recipeform";

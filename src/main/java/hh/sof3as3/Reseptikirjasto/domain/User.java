@@ -2,6 +2,8 @@ package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,10 +23,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String username;
+	@JsonIgnore // piilottaa salasanan kaikissa rest-pyynnöissä (myös data rest)
 	private String password;
 	private String role;
 	// viiteavainattribuutti käyttäjän luomille resepteille
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
 	private List<Recipe> myRecipes;
 	// viiteavainattribuutti käyttäjän luomille kommenteille
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commenter")

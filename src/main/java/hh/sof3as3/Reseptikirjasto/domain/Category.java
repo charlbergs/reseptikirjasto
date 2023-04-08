@@ -2,6 +2,8 @@ package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,8 +19,9 @@ public class Category {
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
 	private Long id; // yksilöivä id-arvo
 	private String name; // kategorian nimi
-	private String color; // tunnusvärisävy, jolla kategoria näkyy reseptien listausnäkymässä ym (esim. "#ffffff")
+	private String color; // korostusväri, jolla kategoria näkyy reseptien listausnäkymässä ym (esim. "#ffffff")
 	// viiteavainattribuutti resepteille
+	@JsonIgnore // blokataan kategorian reseptilista jotta vältetään loputon loop
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "category") // todo: mieti cascadetype
 	private List<Recipe> recipes;
 	
