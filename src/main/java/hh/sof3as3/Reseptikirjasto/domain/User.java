@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,19 +17,27 @@ import jakarta.persistence.Table;
 @Table(name="users")
 public class User {
 	
-	// todo: kirjautuminen ja roolit
-	
 	// attribuutit
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id", nullable=false, updatable=false)
+	private Long id; 
+	
+	@Column(name="username", nullable=false, unique=true)
 	private String username;
+	
+	@Column(name="password", nullable=false)
 	@JsonIgnore // piilottaa salasanan kaikissa rest-pyynnöissä (myös data rest)
-	private String password;
+	private String passwordHash;
+	
+	@Column(name="role", nullable=false)
 	private String role;
+	
 	// viiteavainattribuutti käyttäjän luomille resepteille
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
 	private List<Recipe> myRecipes;
+	
 	// viiteavainattribuutti käyttäjän luomille kommenteille
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commenter")
 	private List<Comment> myComments;
@@ -36,12 +45,12 @@ public class User {
 	// konstruktorit
 	public User() {
 		this.username = null;
-		this.password = null;
+		this.passwordHash = null;
 		this.role = null;
 	}
-	public User(String username, String password, String role) {
+	public User(String username, String passwordHash, String role) {
 		this.username = username;
-		this.password = password;
+		this.passwordHash = passwordHash;
 		this.role = role;
 	}
 	
@@ -58,11 +67,11 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPassword() {
-		return password;
+	public String getPasswordHash() {
+		return passwordHash;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 	public String getRole() {
 		return role;
@@ -86,7 +95,7 @@ public class User {
 	// toString
 	@Override
 	public String toString() {
-		return "id=" + id + ", username=" + username + ", password=" + password + ", role=" + role;
+		return "id=" + id + ", username=" + username + ", password=" + passwordHash + ", role=" + role;
 	}
 	
 	

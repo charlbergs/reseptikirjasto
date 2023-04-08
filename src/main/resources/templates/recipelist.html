@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,10 +18,24 @@
 </head>
 <body>
 
-	<!-- todo: lopullisesta listausnäkymästä pois ainesosat ja valmistusohjeet -->
-
 	<h1>Reseptikirjasto</h1>
-	<a href="/addrecipe">Lisää</a> <a href="/categorylist">Kategoriat</a>
+	
+	<!-- kirjautumaton käyttäjä näkee: -->
+	<div sec:authorize="!isAuthenticated()" style="line-height:0.3;margin-bottom:20px">
+		<a th:href="@{/login}">Kirjaudu sisään</a>
+		<a th:href="@{/signup}">Rekisteröidy</a>
+	</div>
+	<!-- kirjautunut käyttäjä näkee: -->
+	<div sec:authorize="isAuthenticated()" style="line-height:0.3;margin-bottom:20px">
+		<p>Kirjautunut: <span sec:authentication="name"></span></p>
+		<a th:href="@{/logout}">Kirjaudu ulos</a>
+	</div>
+	
+	<div sec:authorize="isAuthenticated()">
+		<a href="/addrecipe">Lisää</a> 
+		<a sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
+	</div>
+	
 	<table>
 		<tr>
 			<th>Nimi</th>

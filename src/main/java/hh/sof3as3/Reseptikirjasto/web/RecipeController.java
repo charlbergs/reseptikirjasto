@@ -3,6 +3,10 @@ package hh.sof3as3.Reseptikirjasto.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +18,11 @@ import hh.sof3as3.Reseptikirjasto.domain.Comment;
 import hh.sof3as3.Reseptikirjasto.domain.CommentRepository;
 import hh.sof3as3.Reseptikirjasto.domain.Recipe;
 import hh.sof3as3.Reseptikirjasto.domain.RecipeRepository;
+import hh.sof3as3.Reseptikirjasto.domain.User;
 import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
 
 @Controller
+@EnableMethodSecurity(securedEnabled = true)
 public class RecipeController {
 	
 	// repositoriot
@@ -28,6 +34,13 @@ public class RecipeController {
 	private CommentRepository commentRepository;
 	@Autowired
 	private UserRepository userRepository;
+	
+	// apumetodi kirjautuneen käyttäjän hakemiseen
+	private User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User user = userRepository.findByUsername(authentication.getName());
+		return user;
+	}
 	
 	// listausnäkymä
 	@GetMapping("/recipelist")
@@ -49,7 +62,7 @@ public class RecipeController {
 		model.addAttribute("comments", commentRepository.findByRecipe(recipe));
 		// välitetään kommenttiolio uuden kommentin luomista varten
 		Comment comment = new Comment();
-		comment.setCommenter(userRepository.findByUsername("Admin")); // todo: asetetaan kirjautunut käyttäjä kommentoijaksi (nyt Admin)
+		comment.setCommenter(getCurrentUser()); // asetetaan kirjautunut käyttäjä kommentin tekijäksi
 		comment.setRecipe(recipe); // asetetaan valittu resepti kommentin resepti-attribuutiksi
 		model.addAttribute("newComment", comment);
 		return "recipeview";
@@ -57,19 +70,22 @@ public class RecipeController {
 	
 	// reseptin lisäys: get
 	@GetMapping("/addrecipe")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String addNewRecipe(Model model) {
-		// välitetään templatelle tyhjä reseptiolio tallentamista varten
+		// tyhjä reseptiolio tallentamista varten
 		Recipe recipe = new Recipe();
-		recipe.setAuthor(userRepository.findByUsername("Admin")); // todo: asetetaan tekijäksi kirjautunut user
+		// asetetaan kirjautunut käyttäjä reseptin tekijäksi
+		recipe.setAuthor(getCurrentUser());
+		// välitetään templatelle
 		model.addAttribute("recipe", recipe);
-		
-		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
-		model.addAttribute("header", "Uusi resepti"); // välitetään välitetään oikea otsikko lomakkeelle
+		model.addAttribute("categories", categoryRepository.findAll()); // kategoriat
+		model.addAttribute("header", "Uusi resepti"); // oikea otsikko lomakkeelle
 		return "recipeform";
 	}
 	
 	// reseptin muokkaus: get
 	@GetMapping("/editrecipe/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String editRecipe(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
 		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
@@ -79,6 +95,7 @@ public class RecipeController {
 	
 	// reseptin lisäys/muokkaus: post
 	@PostMapping("/saverecipe")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String postRecipeForm(Recipe recipe) {
 		recipeRepository.save(recipe);
 		return "redirect:/recipe/" + recipe.getId(); // uudelleenohjataan reseptinäkymään
@@ -86,6 +103,7 @@ public class RecipeController {
 	
 	// reseptin poistaminen
 	@GetMapping("/deleterecipe/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String deleteRecipe(@PathVariable("id") Long id) {
 		recipeRepository.deleteById(id);
 		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään

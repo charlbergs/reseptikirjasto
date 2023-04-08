@@ -1,0 +1,31 @@
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reseptikirjasto</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div>
+	<h1>Rekisteröi uusi käyttäjä</h1>
+     <div>
+		<form th:object="${signupform}" th:action="@{/saveuser}" action="#" method="post">
+			<div>
+				<label> Käyttäjätunnus :<input type="text" th:field="*{username}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" />	
+			</div>
+			<div>
+				<label> Salasana :<input type="password" th:field="*{password}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />	
+			</div>
+			<div>
+				<label> Toista salasana: <input type="password" th:field="*{passwordCheck}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" />	
+			</div>
+			
+			<input type="submit" class="btn btn-primary" value="Rekisteröidy"></input>		
+		</form>
+	</div>
+</div>
+</body>
+</html>

@@ -29,9 +29,9 @@ public class ReseptikirjastoApplication {
 		return (args) -> {
 			
 			// testikäyttäjät
-			User admin = new User("Admin", null, "ADMIN");
-			User user1 = new User("Superkokki", null, "USER");
-			User user2 = new User("Leipuri_Leila", null, "USER");
+			User admin = new User("Admin", "$2a$10$nVppraguSfHLq.epaz7dtu62maYQICK6vE9IQigV5oiSgat8u9oXK", "ADMIN");
+			User user1 = new User("Superkokki", "$2a$10$emC265CrwU2QFaYLJTObvuKEkNsisiBZurwuUv8fyCJt1IcKBtzi2", "USER");
+			User user2 = new User("Leipuri_Leila", "$2a$10$emC265CrwU2QFaYLJTObvuKEkNsisiBZurwuUv8fyCJt1IcKBtzi2", "USER");
 			userRepository.save(admin);
 			userRepository.save(user1);
 			userRepository.save(user2);
