@@ -1,55 +1,142 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 	<style>
-		/* tyylit tässä väliaikaisesti */
-
 		.frame {
-			width: 50%; 
-			padding: 10px;
-			margin: auto;
+			width:100%;
+			background-color:#fff;
+			margin:auto;
 			border-radius: 5px;
 		}
-		.comment {
-			width: 80%; 
-			border: 3px solid #8f8f8f; 
-			border-radius: 10px; 
-			padding: 5px;
-			margin: 5px;
+		.col-sm-3 {
+			line-height:1px;
+			padding-bottom:7px;
 		}
+		.textbox {
+			white-space:pre-wrap;
+			text-align:left;
+			margin:auto;
+			width:70%;
+		}
+		.commentbox {
+			max-width: 600px;
+			margin:auto;
+			border:2px solid #8f8f8f;
+			border-radius:10px;
+			background-color:#dbd9d9;
+		}
+		
 	</style>
 </head>
 <body>
-	<a href="/recipelist">Takaisin</a>
-	
-	<div class="frame" th:style="|border: 10px solid ${recipe.category.color}|">
-		<!-- resepti -->
-		<h3 th:text="${recipe.name}"></h3>
-		<p th:text="|reseptin tekijä: ${recipe.author.username}|" />
-		<p th:text="|kategoria: ${recipe.category.name}|" />
-		<p th:text="|annosmäärä: ${recipe.numberOfServings}|" />
-		<p th:text="|valmistusaika: ${recipe.time} minuuttia|" />
-		<h4>Ainesosat:</h4>
-		<p style="white-space:pre-wrap" th:text="${recipe.listOfIngredients}" />
-		<h4>Valmistusohjeet:</h4>
-		<p style="white-space:pre-wrap" th:text="${recipe.instructions}" />
-		<a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a>
-		<a th:href="@{/deleterecipe/{id}(id=${recipe.id})}">Poista</a>
-		<!-- kommentit -->
-		<h4>Kommentit: </h4>
-		<div class="comment" th:each="comment : ${comments}">
-			<p th:text="|${comment.commenter.username} ${comment.timestamp}|"/> <!-- todo: formatoi timestamp -->
-			<p th:text="${comment.message}"/>
-			<a th:href="@{/deletecomment/{recipeid}/{commentid} (recipeid=${recipe.id}, commentid=${comment.id})}">Poista</a>
+<div style="text-align:center">
+	<div class="container-fluid">
+		<!-- header -->
+		<div class="row" style="padding-top:20px">
+			<div class="col-8" id="appName">
+				<h1>Reseptikirjasto</h1>
+			</div>
+			<div class="col-4" style="padding-top:10px;max-width:200px">
+				<!-- kirjautumaton käyttäjä näkee: -->
+				<div sec:authorize="!isAuthenticated()" style="line-height:2;margin-bottom:20px">
+					<a class="btn btn-sm btn-primary" th:href="@{/login}">Kirjaudu sisään</a>
+					<a class="btn btn-sm btn-primary" th:href="@{/signup}">Rekisteröidy</a>
+				</div>
+				<!-- kirjautunut käyttäjä näkee: -->
+				<div sec:authorize="isAuthenticated()" style="line-height:1;margin-bottom:10px">
+					<p>Kirjautunut: <span sec:authentication="name" Style="font-weight:bold"></span></p>
+					<a class="btn btn-sm btn-primary" th:href="@{/logout}">Kirjaudu ulos</a>
+				</div>
+			</div>
 		</div>
-		<form id="commentform" method="post" action="#" th:action="@{/savecomment}" th:object="${newComment}">
-			<input type="hidden" th:field="${newComment.commenter}" th:value="${newComment.commenter}" />
-			<input type="hidden" th:field="${newComment.recipe}" th:value="${newComment.recipe}" />
-			<textarea form="commentform" cols="30" rows="3" th:field="${newComment.message}"></textarea>
-			<input type="submit" value="Lisää" />
-		</form>
+		<!-- navigaatiopalkki -->
+		<div style="background-color:#8f8f8f">
+			<div class="row" style="width:80%;margin:auto;">
+				<div class="col-md-2">
+					<a class="link-light" href="/recipelist">Kaikki reseptit</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/addrecipe">Lisää uusi resepti</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/myrecipes">Omat reseptit</a>
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
+				</div>
+			</div>
+		</div>
 	</div>
+	<!-- resepti ja kommentit -->
+	<div class="container" style="width:90%;padding:20px;margin: auto;">
+		<!-- resepti -->
+		<div class ="frame" th:style="|border:3px solid ${recipe.category.color}|">
+			<h3 th:text="${recipe.name}" th:style="|background-color:${recipe.category.color};padding:10px|"></h3>
+			<div class="container" style="padding:20px">
+				<div class="row">
+					<div class="col-sm-3">
+						<h6>Tekijä</h6>
+						<p th:text="${recipe.author.username}"></p>
+					</div>
+					<div class="col-sm-3">
+						<h6>Kategoria</h6>
+						<p th:text="${recipe.category.name}"></p>
+					</div>
+					<div class="col-sm-3">
+						<h6>Annosmäärä</h6>
+						<p th:text="${recipe.numberOfServings}"></p>
+					</div>
+					<div class="col-sm-3">
+						<h6>Valmistusaika</h6>
+						<p th:text="${recipe.timeStr}"></p>
+					</div>
+				</div>
+				<div class="row" style="width:80%;padding:10px;margin:auto">
+					<div class="col-md-4" style="padding:10px">
+						<h4>Ainesosat</h4>
+						<p class="textbox"  th:text="${recipe.listOfIngredients}" />
+					</div>
+					<div class="col-md-8" style="padding:10px">
+						<h4>Valmistusohjeet</h4>
+						<p class="textbox" th:text="${recipe.instructions}" />
+					</div>
+				</div>
+				<div class="col" style="padding:20px">
+					<a class="btn btn-md btn-light" sec:authorize="hasAuthority('ADMIN')" th:href="@{/editrecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Muokkaa</a>
+					<a class="btn btn-md btn-light" sec:authorize="hasAuthority('ADMIN')" th:href="@{/deleterecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Poista</a>
+				</div>
+				<!-- kommentit -->
+				<div class="container" th:style="|border-top:3px solid ${recipe.category.color}|">
+					<h4>Kommentit</h4>
+					<!-- kommenttilista -->
+					<div class="row commentbox" th:each="comment : ${comments}" style="margin-bottom:5px;">
+						<div class="col-2" style="font-size:11px">
+							<p th:text="${comment.getTimestampStr}|"/>
+						</div>
+						<div class="col-8" style="margin:auto;text-align:left">
+							<p style="font-size:12px;font-weight:bold" th:text="|${comment.commenter.username}|"/>
+							<p style="font-size:12px" th:text="${comment.message}"/>
+						</div>
+						<div class="col-2" style="margin:auto">
+							<a class="btn btn-sm" sec:authorize="hasAuthority('ADMIN')" th:href="@{/deletecomment/{commentid} (commentid=${comment.id})}" th:style="|background-color:${recipe.category.color}|"> X </a>
+						</div>
+					</div>
+					<!-- lisää uusi kommentti -->
+					<div style="padding:10px" >
+						<form sec:authorize="isAuthenticated()" id="commentform" method="post" action="#" th:action="@{/savecomment}" th:object="${newComment}">
+							<input type="hidden" th:field="${newComment.commenter}" th:value="${newComment.commenter}" />
+							<input type="hidden" th:field="${newComment.recipe}" th:value="${newComment.recipe}" />
+							<textarea form="commentform" cols="30" rows="4" th:field="${newComment.message}"></textarea>
+							<input class="btn btn-sm" type="submit" value="Lisää" th:style="|background-color:${recipe.category.color}|"/>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
 </body>
 </html>

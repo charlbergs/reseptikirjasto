@@ -25,7 +25,7 @@ public class CategoryController {
 	
 	// kategorianäkymä: listaus ja lisäyslomake
 	@GetMapping("/categorylist")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String getCategories(Model model) {
 		// haetaan kategoriat listalle ja välitetään templatelle
 		List<Category> categories = (List<Category>) categoryRepository.findAll();
@@ -37,7 +37,7 @@ public class CategoryController {
 	
 	// kategorian lisäys: post
 	@PostMapping("/addcategory")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String addCategory(Category category) {
 		categoryRepository.save(category);
 		return "redirect:/categorylist";

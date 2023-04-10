@@ -1,6 +1,7 @@
 package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -61,6 +62,9 @@ public class Comment {
 	}
 	public Timestamp getTimestamp() {
 		return timestamp;
+	}
+	public String getTimestampStr() { // palauttaa timestampin formatoituna stringinä
+		return new SimpleDateFormat("d.M.yyyy H:mm:ss").format(timestamp);
 	}
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;

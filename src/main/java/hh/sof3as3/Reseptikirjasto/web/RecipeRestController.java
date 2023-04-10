@@ -25,21 +25,21 @@ public class RecipeRestController {
 	
 	// hakee ja palauttaa json-muodossa kaikkien reseptien tiedot
 	@GetMapping("/recipes")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public List<Recipe> recipeListRest() {
 		return (List<Recipe>) recipeRepository.findAll();
 	}
 	
 	// hakee ja palauttaa json-muodossa yhden reseptin tiedot
 	@GetMapping("/recipes/{recipeid}")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public Optional<Recipe> getRecipeRest(@PathVariable("recipeid") Long recipeid) {
 		return recipeRepository.findById(recipeid);
 	}
 	
 	// hakee ja palauttaa json-muodossa yhden reseptin kaikki kommentit
 	@GetMapping("/recipes/{recipeid}/comments")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public List<Comment> commentListRest(@PathVariable("recipeid") Long recipeid) {
 		Recipe recipe = recipeRepository.findById(recipeid).get();
 		return recipe.getComments();

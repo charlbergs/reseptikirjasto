@@ -24,7 +24,7 @@ public class CommentController {
 	
 	// kommentin lisäys
 	@PostMapping("/savecomment")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain admin ja kirjautunut käyttäjä
 	public String saveComment(Comment comment) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		comment.setTimestamp(timestamp); // asetetaan timestamp
@@ -33,9 +33,11 @@ public class CommentController {
 	}
 	
 	// kommentin poistaminen
-	@GetMapping("/deletecomment/{recipeid}/{commentid}") // reseptin id redirectiä ja kommentin id kommentin poistamista varten
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-	public String deletecomment(@PathVariable("recipeid") Long recipeid, @PathVariable("commentid") Long commentid) {
+	// reseptin id redirectiä ja kommentin id kommentin poistamista varten
+	@GetMapping("/deletecomment/{commentid}")
+	@PreAuthorize("hasAnyAuthority('ADMIN')") // todo: admin ja kommentin omistaja
+	public String deletecomment(@PathVariable("commentid") Long commentid) {
+		Long recipeid = commentRepository.findById(commentid).get().getRecipe().getId();
 		commentRepository.deleteById(commentid);
 		return "redirect:/recipe/" + recipeid; // uudelleenohjaus takaisin reseptinäkymään
 	}

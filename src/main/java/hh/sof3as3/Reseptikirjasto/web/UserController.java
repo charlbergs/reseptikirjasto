@@ -1,6 +1,8 @@
 package hh.sof3as3.Reseptikirjasto.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
 import jakarta.validation.Valid;
 
 @Controller
+@EnableMethodSecurity(securedEnabled = true)
 public class UserController {
 	
 	// repositoriot
@@ -23,6 +26,7 @@ public class UserController {
 	
 	// hakee uuden käyttäjän rekisteröintilomakkeen
 	@GetMapping("/signup")
+	@PreAuthorize("!hasAnyAuthority('Admin', 'USER')") // vain kirjautumaton käyttäjä
 	public String addUser(Model model) {
     	model.addAttribute("signupform", new SignupForm());
         return "signupform";
@@ -30,6 +34,7 @@ public class UserController {
 	
 	// luo uuden käyttäjän rekisteröintilomakkeelta
 	@PostMapping("/saveuser")
+	@PreAuthorize("!hasAnyAuthority('Admin', 'USER')") // vain kirjautumaton käyttäjä
 	public String saveUser(@Valid @ModelAttribute("signupform") SignupForm signupForm, BindingResult bindingResult) {
 		
 		if (!bindingResult.hasErrors()) {

@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 	<style>
 		input[type='number'] {
     		width: 45px;
@@ -10,8 +11,48 @@
 	</style>
 </head>
 <body>
-	<h1 th:text="${header}"></h1>
-	<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
+<div style="text-align:center">
+	<div class="container-fluid">
+		<!-- header -->
+		<div class="row" style="padding-top:20px">
+			<div class="col-8" id="appName">
+				<h1>Reseptikirjasto</h1>
+			</div>
+			<div class="col-4" style="padding-top:10px;max-width:200px">
+				<!-- kirjautumaton käyttäjä näkee: -->
+				<div sec:authorize="!isAuthenticated()" style="line-height:2;margin-bottom:20px">
+					<a class="btn btn-sm btn-primary" th:href="@{/login}">Kirjaudu sisään</a>
+					<a class="btn btn-sm btn-primary" th:href="@{/signup}">Rekisteröidy</a>
+				</div>
+				<!-- kirjautunut käyttäjä näkee: -->
+				<div sec:authorize="isAuthenticated()" style="line-height:1;margin-bottom:10px">
+					<p>Kirjautunut: <span sec:authentication="name" Style="font-weight:bold"></span></p>
+					<a class="btn btn-sm btn-primary" th:href="@{/logout}">Kirjaudu ulos</a>
+				</div>
+			</div>
+		</div>
+		<!-- navigaatiopalkki -->
+		<div style="background-color:#8f8f8f">
+			<div class="row" style="width:80%;margin:auto;">
+				<div class="col-md-2">
+					<a class="link-light" href="/recipelist">Kaikki reseptit</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/addrecipe">Lisää uusi resepti</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/myrecipes">Omat reseptit</a>
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- reseptilomake -->
+	<div class="container" style="width:600px;text-align:left;padding:10px">
+		<h3 th:text="${header}"></h3>
+		<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
 		<!-- id-arvo ja tekijä piilotettuna jotta saadaan kuljetettua mukana -->
 		<input type="hidden" th:field="${recipe.id}"/>
 		<input type="hidden" th:field="${recipe.author}"/>
@@ -24,11 +65,12 @@
 			<select id="categorylist" th:field="*{category}">
 				<option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
 			</select>
+		</p>
+		<p>
 			<label>Annosmäärä: </label>
 			<input type="number" th:field="${recipe.numberOfServings}" required />
-			<!-- todo: muuta valinta x h x min -->
-			<label>Valmistusaika (minuuttia): </label>
-			<input type="number" step="5" th:field="${recipe.time}" required />
+			<label>Valmistusaika: </label>
+			<input type="time" th:field="${recipe.time}" required /> <!-- todo fix: time-kenttä tyhjenee muokkauslomakkeella -->
 		</p>
 		<p><label>Ainesosat: </label></p>
 		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.listOfIngredients}" required></textarea></p>
@@ -36,5 +78,7 @@
 		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.instructions}" required></textarea></p>
 		<input type="submit" value="Tallenna"/> <input type="reset" value="Palauta" /> <input type="button" value="Takaisin" onclick="history.back()"> <!-- takaisin-nappi vie edelliselle sivulle -->
 	</form>
+	</div>
+</div>
 </body>
 </html>

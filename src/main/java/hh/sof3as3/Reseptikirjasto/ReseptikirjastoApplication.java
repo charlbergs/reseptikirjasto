@@ -1,5 +1,6 @@
 package hh.sof3as3.Reseptikirjasto;
 
+import java.time.LocalTime;
 import java.sql.Timestamp;
 
 import org.springframework.boot.CommandLineRunner;
@@ -47,7 +48,7 @@ public class ReseptikirjastoApplication {
 			
 			// testireseptit
 			Recipe rec1 = new Recipe(
-				"Munakas", 1, 15,
+				"Munakas", 1, LocalTime.of(0, 15), 
 				"- 2 kananmunaa \n"
 				+ "- loraus maitoa \n"
 				+ "- suolaa, pippuria \n"
@@ -58,7 +59,7 @@ public class ReseptikirjastoApplication {
 				categ2, user1
 			);
 			Recipe rec2 = new Recipe(
-				"Kasvissosekeitto", 4, 30,
+				"Kasvissosekeitto", 4, LocalTime.of(0, 30),
 				"500 g porkkanaa\n"
 				+ "2-3 perunaa\n"
 				+ "1 sipuli\n"
@@ -75,7 +76,7 @@ public class ReseptikirjastoApplication {
 				categ3, user1
 			);
 			Recipe rec3 = new Recipe(
-				"Mustikkapiirakka kermaviilillä", 8, 45,
+				"Mustikkapiirakka kermaviilillä", 8, LocalTime.of(0, 45),
 				"Pohja:\n"
 				+ "- 100 g voita\n"
 				+ "- 0,75 dl sokeria\n"
@@ -98,7 +99,7 @@ public class ReseptikirjastoApplication {
 				categ1, user2
 			);
 			Recipe rec4 = new Recipe(
-				"Letut", 10, 180, 
+				"Letut", 10, LocalTime.of(2, 0), 
 				"2 kananmunaa\n"
 				+ "0,5 l maitoa\n"
 				+ "3 dl vehnäjauhoja\n"

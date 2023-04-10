@@ -23,10 +23,10 @@ public class WebSecurityConfig {
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/recipelist", "/recipe/**").permitAll() // sallitut sivut kirjautumattomalle käyttäjälle
-				.requestMatchers("/signup", "/saveuser").permitAll()
-				.requestMatchers(toH2Console()).permitAll()
-				.requestMatchers("/categorylist").hasRole("ADMIN") // vain admin
+				.requestMatchers("/allrecipes", "/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille
+				.requestMatchers("/signup", "/saveuser").anonymous() // vain kirjautumattomille
+				
+				.requestMatchers(toH2Console()).permitAll() // h2-consolen salliminen
 				.anyRequest().authenticated()
 				.and()
 				.csrf().ignoringRequestMatchers(toH2Console())

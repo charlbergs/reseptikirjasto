@@ -3,59 +3,82 @@
 <head>
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 	<style>
-		/* tyylit tässä väliaikaisesti, borderit vaan helpottamassa reseptilistauksen lukemista. */
-		table {
-			border: 1px solid;
-		}
-		th {
-			border: 1px solid;
-		}
-		td {
-			border: 1px solid;
+		.recipecard {
+			padding:3px;
+			border:5px solid #fff;
+			text-align:center;
 		}
 	</style>
 </head>
 <body>
-
-	<h1>Reseptikirjasto</h1>
-	
-	<!-- kirjautumaton käyttäjä näkee: -->
-	<div sec:authorize="!isAuthenticated()" style="line-height:0.3;margin-bottom:20px">
-		<a th:href="@{/login}">Kirjaudu sisään</a>
-		<a th:href="@{/signup}">Rekisteröidy</a>
+<div style="text-align:center">
+	<div class="container-fluid">
+		<!-- header -->
+		<div class="row" style="padding-top:20px">
+			<div class="col-8" id="appName">
+				<h1>Reseptikirjasto</h1>
+			</div>
+			<div class="col-4" style="padding-top:10px;max-width:200px">
+				<!-- kirjautumaton käyttäjä näkee: -->
+				<div sec:authorize="!isAuthenticated()" style="line-height:2;margin-bottom:20px">
+					<a class="btn btn-sm btn-primary" th:href="@{/login}">Kirjaudu sisään</a>
+					<a class="btn btn-sm btn-primary" th:href="@{/signup}">Rekisteröidy</a>
+				</div>
+				<!-- kirjautunut käyttäjä näkee: -->
+				<div sec:authorize="isAuthenticated()" style="line-height:1;margin-bottom:10px">
+					<p>Kirjautunut: <span sec:authentication="name" Style="font-weight:bold"></span></p>
+					<a class="btn btn-sm btn-primary" th:href="@{/logout}">Kirjaudu ulos</a>
+				</div>
+			</div>
+		</div>
+		<!-- navigaatiopalkki -->
+		<div style="background-color:#8f8f8f">
+			<div class="row" style="width:80%;margin:auto;">
+				<div class="col-md-2">
+					<a class="link-light" href="/recipelist">Kaikki reseptit</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/addrecipe">Lisää uusi resepti</a> 
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/myrecipes">Omat reseptit</a>
+				</div>
+				<div class="col-md-2">
+					<a class="link-light" sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
+				</div>
+			</div>
+		</div>
 	</div>
-	<!-- kirjautunut käyttäjä näkee: -->
-	<div sec:authorize="isAuthenticated()" style="line-height:0.3;margin-bottom:20px">
-		<p>Kirjautunut: <span sec:authentication="name"></span></p>
-		<a th:href="@{/logout}">Kirjaudu ulos</a>
+	
+	<!-- reseptinäkymä -->
+	<div class="containder-md" style="width:80%;margin:auto">
+		<div class="row">
+			<div class="col-sm-6 col-md-4 recipecard" th:each="recipe : ${recipes}" th:style="|background-color:${recipe.category.color}|">
+				<div id="inner" style="background-color:#fff;height:100%">
+					<div class="col" th:style="|background-color:${recipe.category.color}|">
+						<p th:text="${recipe.category.name}" style="font-size:14px"></p>
+					</div>
+					<div class="col">
+						<a class="link-dark" th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+					</div>
+					<div class="col" th:style="|border-bottom:3px solid ${recipe.category.color}|">
+						<p th:text="${recipe.author.username}" style="font-size:14px;color:#8f8f8f"></p>
+					</div>
+					<div class="row">
+						<div class="col" style="font-size:12px;color:#8f8f8f">
+							<p th:text="|Annoksia: ${recipe.numberOfServings}|"></p>
+						</div>
+						<div class="col" style="font-size:12px;color:#8f8f8f">
+							<p th:text="${recipe.getTimeStr}"></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	
-	<div sec:authorize="isAuthenticated()">
-		<a href="/addrecipe">Lisää</a> 
-		<a sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
-	</div>
-	
-	<table>
-		<tr>
-			<th>Nimi</th>
-			<th>Annosmäärä</th>
-			<th>Aika</th>
-			<th>Kategoria</th>
-			<th>Tekijä</th>
-			<th></th>
-			<th></th>
-		</tr>
-		<tr th:each="recipe : ${recipes}">
-			<td><a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}" ></a></td>
-			<td th:text="${recipe.numberOfServings}" />
-			<td th:text="|${recipe.time} minuuttia|" />
-			<td th:text="${recipe.category.name}" />
-			<td th:text="${recipe.author.username}" />
-			<td><a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
-			<td><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
-		</tr>
-	</table>
-
+</div>
 </body>
 </html>

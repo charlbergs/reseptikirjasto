@@ -1,6 +1,7 @@
 package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.util.List;
+import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -24,7 +25,7 @@ public class Recipe {
 	private Long id; // yksilöivä id-arvo
 	private String name; // reseptin nimi
 	private int numberOfServings; // annosmäärä
-	private int time; // valmistusaika minuutteina
+	private LocalTime time; // valmistusaika
 	@Column(length=1000) private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
 	@Column(length=1000) private String instructions; // valmistusohjeet
 	// viiteavainattribuutti kategorialle
@@ -46,13 +47,13 @@ public class Recipe {
 	public Recipe() {
 		this.name = null;
 		this.numberOfServings = 0;
-		this.time = 0;
+		this.time = null;
 		this.listOfIngredients = null;
 		this.instructions = null;
 		this.category = null;
 		this.author = null;
 	}
-	public Recipe(String name, int numberOfServings, int time, String listOfIngredients, String instructions, Category category, User author) {
+	public Recipe(String name, int numberOfServings, LocalTime time, String listOfIngredients, String instructions, Category category, User author) {
 		this.name = name;
 		this.numberOfServings = numberOfServings;
 		this.time = time;
@@ -81,10 +82,22 @@ public class Recipe {
 	public void setNumberOfServings(int numberOfServings) {
 		this.numberOfServings = numberOfServings;
 	}
-	public int getTime() {
+	public LocalTime getTime() {
 		return time;
 	}
-	public void setTime(int time) {
+	public String getTimeStr() { // palauttaa valmistusajan muodossa x h x min
+		String timeStr = "";
+		int hrs = time.getHour();
+		int mins = time.getMinute();
+		if (hrs != 0) {
+			timeStr += hrs + " h ";
+		}
+		if (mins != 0) {
+			timeStr += mins + " min";
+		}
+		return timeStr;
+	}
+	public void setTime(LocalTime time) {
 		this.time = time;
 	}
 	public String getListOfIngredients() {

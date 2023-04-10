@@ -42,15 +42,25 @@ public class RecipeController {
 		return user;
 	}
 	
-	// listausnäkymä
+	// listausnäkymä: hakee kaikki reseptit
 	@GetMapping("/recipelist")
-	public String getIndex(Model model) {
+	public String getAllRecipes(Model model) {
 		// haetaan tietokantaan tallennetut reseptit listalle
 		List<Recipe> recipes = (List<Recipe>) recipeRepository.findAll();
 		// välitetään templatelle
 		model.addAttribute("recipes", recipes);
 		return "recipelist";
 	}
+	// hakee kirjautuneen käyttäjän omat reseptit
+	@GetMapping("/myrecipes")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	public String getMyRecipes(Model model) {
+		// haetaan tietokantaan tallennetut reseptit listalle
+		List<Recipe> recipes = (List<Recipe>) recipeRepository.findByAuthor(getCurrentUser());
+		// välitetään templatelle
+		model.addAttribute("recipes", recipes);
+		return "myrecipes";
+		}
 	
 	// yksittäisen reseptin katselunäkymä
 	@GetMapping("/recipe/{recipeid}")
@@ -70,7 +80,7 @@ public class RecipeController {
 	
 	// reseptin lisäys: get
 	@GetMapping("/addrecipe")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain kirjautunut käyttäjä tai admin
 	public String addNewRecipe(Model model) {
 		// tyhjä reseptiolio tallentamista varten
 		Recipe recipe = new Recipe();
@@ -82,11 +92,11 @@ public class RecipeController {
 		model.addAttribute("header", "Uusi resepti"); // oikea otsikko lomakkeelle
 		return "recipeform";
 	}
-	
+
 	// reseptin muokkaus: get
 	@GetMapping("/editrecipe/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-	public String editRecipe(@PathVariable("id") Long id, Model model) {
+	@PreAuthorize("hasAuthority('ADMIN')") // todo: admin ja reseptin tekijä
+	public String editRecipe(@PathVariable("id") Long id, Recipe recipe, Model model) {
 		model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
 		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
 		model.addAttribute("header", "Muokkaa reseptiä"); // välitetään oikea otsikko lomakkeelle
@@ -95,7 +105,7 @@ public class RecipeController {
 	
 	// reseptin lisäys/muokkaus: post
 	@PostMapping("/saverecipe")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain kirjautunut käyttäjä tai admin
 	public String postRecipeForm(Recipe recipe) {
 		recipeRepository.save(recipe);
 		return "redirect:/recipe/" + recipe.getId(); // uudelleenohjataan reseptinäkymään
@@ -103,7 +113,7 @@ public class RecipeController {
 	
 	// reseptin poistaminen
 	@GetMapping("/deleterecipe/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	@PreAuthorize("hasAuthority('ADMIN')") // todo: admin ja reseptin tekijä
 	public String deleteRecipe(@PathVariable("id") Long id) {
 		recipeRepository.deleteById(id);
 		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään
