@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -20,28 +21,42 @@ import jakarta.persistence.OneToMany;
 public class Recipe {
 	
 	// attribuutit
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
 	private Long id; // yksilöivä id-arvo
+	
 	private String name; // reseptin nimi
 	private int numberOfServings; // annosmäärä
 	private LocalTime time; // valmistusaika
-	@Column(length=1000) private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
-	@Column(length=1000) private String instructions; // valmistusohjeet
+	
+	@Column(length=1000) 
+	private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
+	
+	@Column(length=1000) 
+	private String instructions; // valmistusohjeet
+	
 	// viiteavainattribuutti kategorialle
 	@JsonIgnoreProperties({"color"})
 	@ManyToOne
 	@JoinColumn(name="categoryid")
 	private Category category;
+	
 	// viiteavainattribuutti reseptin tekijälle
 	@JsonIgnoreProperties({"role", "myRecipes", "myComments"}) // blokataan tekijän myRecipes ja myComments jotta vältetään loputon loop
 	@ManyToOne
 	@JoinColumn(name="authorid")
 	private User author;
+	
 	// viiteavainattribuutti kommenteille
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
 	private List<Comment> comments;
+	
+	// viiteavainattribuutti tykkäyksille
+	@JsonIgnore
+	@ManyToMany(mappedBy = "likedRecipes")
+	private List<User> likes;
 	
 	// konstruktorit
 	public Recipe() {
@@ -129,6 +144,12 @@ public class Recipe {
 	}
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+	public List<User> getLikes() {
+		return likes;
+	}
+	public void setLikes(List<User> likes) {
+		this.likes = likes;
 	}
 	
 	// toString

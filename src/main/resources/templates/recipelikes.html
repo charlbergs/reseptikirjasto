@@ -1,25 +1,18 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 	<style>
-		
-		table {
-			border: 1px solid;
-		}
-		th {
-			border: 1px solid;
-		}
-		td {
-			border: 1px solid;
+		td{
+			padding:3px;
 		}
 	</style>
 </head>
 <body>
 <div style="text-align:center">
- 	<div class="container-fluid">
+	<div class="container-fluid">
 		<!-- header -->
 		<div class="row" style="padding-top:20px">
 			<div class="col-8" id="appName">
@@ -59,30 +52,14 @@
 			</div>
 		</div>
 	</div>
-	<!-- reseptilistaus -->
-	<div class="container-fluid">
-		<h3>Omat reseptit</h3>
-		<table class="table table-bordered" style="width:60%;margin:auto;text-align:left">
-			<tr>
-				<th>Nimi</th>
-				<th>Annosmäärä</th>
-				<th>Aika</th>
-				<th>Kategoria</th>
-				<th>Tekijä</th>
-				<th sec:authorize="hasAuthority('USER')"></th>
-				<th sec:authorize="hasAuthority('USER')"></th>
-			</tr>
-			<tr th:each="recipe : ${recipes}">
-				<td><a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}" ></a></td>
-				<td th:text="${recipe.numberOfServings}" />
-				<td th:text="${recipe.getTimeStr}" />
-				<td th:text="${recipe.category.name}" />
-				<td th:text="${recipe.author.username}" />
-				<td sec:authorize="hasAnyAuthority('USER', 'ADMIN')"><a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
-				<td sec:authorize="hasAnyAuthority('USER', 'ADMIN')"><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
-			</tr>
-		</table>
-	</div>
+	
+	<!-- reseptin tykkäykset -->
+	<h3>Tykkäykset</h3>	
+	<table class="table table-bordered" style="width:60%;margin:auto">
+		<tr th:each="user : ${users}">
+			<td th:text="${user.username}" />
+		</tr>
+	</table>
 </div>
 </body>
 </html>

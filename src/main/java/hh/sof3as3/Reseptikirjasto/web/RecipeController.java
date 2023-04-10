@@ -65,14 +65,27 @@ public class RecipeController {
 	// yksittäisen reseptin katselunäkymä
 	@GetMapping("/recipe/{recipeid}")
 	public String viewRecipe(@PathVariable("recipeid") Long recipeid, Model model) {
+		User user = getCurrentUser();
 		// välitetään valittu resepti templatelle
 		Recipe recipe = recipeRepository.findById(recipeid).get();
 		model.addAttribute("recipe", recipe);
+		// välitetään tieto onko käyttäjällä reseptin muokkaus- ja poisto-oikeus
+		if (user != null && (recipe.getAuthor() == user || user.getRole() == "ADMIN")) {
+			model.addAttribute("recipeOwner", "isRecipeOwner");
+		} else {
+			model.addAttribute("recipeOwner", "isNotRecipeOwner");
+		}
+		// välitetään tieto onko kirjautunut käyttäjä tykännyt reseptistä (tykkää / peru tykkäys -painike)
+		if (user != null && user.getLikedRecipes().contains(recipe)) {
+			model.addAttribute("like", "showUnlike");
+		} else {
+			model.addAttribute("like", "showLike");
+		}
 		// välitetään valitun reseptin kommentit
 		model.addAttribute("comments", commentRepository.findByRecipe(recipe));
 		// välitetään kommenttiolio uuden kommentin luomista varten
 		Comment comment = new Comment();
-		comment.setCommenter(getCurrentUser()); // asetetaan kirjautunut käyttäjä kommentin tekijäksi
+		comment.setCommenter(user); // asetetaan kirjautunut käyttäjä kommentin tekijäksi
 		comment.setRecipe(recipe); // asetetaan valittu resepti kommentin resepti-attribuutiksi
 		model.addAttribute("newComment", comment);
 		return "recipeview";
@@ -95,12 +108,20 @@ public class RecipeController {
 
 	// reseptin muokkaus: get
 	@GetMapping("/editrecipe/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')") // todo: admin ja reseptin tekijä
-	public String editRecipe(@PathVariable("id") Long id, Recipe recipe, Model model) {
-		model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
-		model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
-		model.addAttribute("header", "Muokkaa reseptiä"); // välitetään oikea otsikko lomakkeelle
-		return "recipeform"; // uudelleenohjataan listausnäkymään
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	public String editRecipe(@PathVariable("id") Long id, Model model) {
+		// tarkistetaan että kirjautunut käyttäjä on reseptin tekijä tai admin,
+		// muuten muokkauslomakkeen haku epäonnistuu
+		User user = getCurrentUser();
+		Recipe recipe = recipeRepository.findById(id).get();
+		if (recipe.getAuthor() == user || user.getRole() == "ADMIN") {
+			model.addAttribute("recipe", recipeRepository.findById(id)); // välitetään templatelle oikea resepti id:n avulla 
+			model.addAttribute("categories", categoryRepository.findAll()); // välitetään templatelle kategoriat
+			model.addAttribute("header", "Muokkaa reseptiä"); // välitetään oikea otsikko lomakkeelle
+			return "recipeform"; // uudelleenohjataan listausnäkymään
+		} else {
+			return "redirect:/recipelist";
+		}
 	}
 	
 	// reseptin lisäys/muokkaus: post
@@ -113,9 +134,15 @@ public class RecipeController {
 	
 	// reseptin poistaminen
 	@GetMapping("/deleterecipe/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')") // todo: admin ja reseptin tekijä
-	public String deleteRecipe(@PathVariable("id") Long id) {
-		recipeRepository.deleteById(id);
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	public String deleteRecipe(@PathVariable("id") Long id, Model model) {
+		// tarkistetaan että kirjautunut käyttäjä on reseptin tekijä tai admin,
+		// muuten poisto epäonnistuu
+		User user = getCurrentUser();
+		Recipe recipe = recipeRepository.findById(id).get();
+		if (recipe.getAuthor() == user || user.getRole() == "ADMIN") {
+			recipeRepository.deleteById(id);
+		}
 		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään
 	}
 

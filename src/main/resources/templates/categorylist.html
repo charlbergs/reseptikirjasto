@@ -44,6 +44,9 @@
 					<a class="link-light" sec:authorize="isAuthenticated()" href="/myrecipes">Omat reseptit</a>
 				</div>
 				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/mylikes">Tykätyt reseptit</a>
+				</div>
+				<div class="col-md-2">
 					<a class="link-light" sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
 				</div>
 			</div>

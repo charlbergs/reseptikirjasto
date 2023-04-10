@@ -65,17 +65,21 @@
 					<a class="link-light" sec:authorize="isAuthenticated()" href="/myrecipes">Omat reseptit</a>
 				</div>
 				<div class="col-md-2">
+					<a class="link-light" sec:authorize="isAuthenticated()" href="/mylikes">Tykätyt reseptit</a>
+				</div>
+				<div class="col-md-2">
 					<a class="link-light" sec:authorize="hasAuthority('ADMIN')" href="/categorylist">Kategoriat</a>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- resepti ja kommentit -->
-	<div class="container" style="width:90%;padding:20px;margin: auto;">
+	<div class="container" style="width:70%;padding:20px;margin: auto;">
 		<!-- resepti -->
 		<div class ="frame" th:style="|border:3px solid ${recipe.category.color}|">
 			<h3 th:text="${recipe.name}" th:style="|background-color:${recipe.category.color};padding:10px|"></h3>
 			<div class="container" style="padding:20px">
+				<input type="hidden" th:field="${recipe.id}"/>
 				<div class="row">
 					<div class="col-sm-3">
 						<h6>Tekijä</h6>
@@ -104,9 +108,19 @@
 						<p class="textbox" th:text="${recipe.instructions}" />
 					</div>
 				</div>
-				<div class="col" style="padding:20px">
-					<a class="btn btn-md btn-light" sec:authorize="hasAuthority('ADMIN')" th:href="@{/editrecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Muokkaa</a>
-					<a class="btn btn-md btn-light" sec:authorize="hasAuthority('ADMIN')" th:href="@{/deleterecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Poista</a>
+				<div style="padding:20px">
+					<!-- tykkäys: jos käyttäjä tykännyt niin näkyy peru tykkäys -->
+					<form th:if="${like} == 'showLike'" id="addLike" method="post" action="#" th:action="@{/addlike/{id}(id=${recipe.id})}" th:object="${recipe}">
+						<input type="submit" value="Tykkää" class="btn btn-md btn-light" sec:authorize="isAuthenticated()" th:style="|background-color:${recipe.category.color};width:150px|" />
+					</form>
+					<form th:if="${like} == 'showUnlike'" id="deleteLike" method="post" action="#" th:action="@{/deletelike/{id}(id=${recipe.id})}" th:object="${recipe}">
+						<input type="submit" value="Peru tykkäys" class="btn btn-md btn-light" sec:authorize="isAuthenticated()" th:style="|background-color:${recipe.category.color};width:150px|" />
+					</form>
+					<!-- katso tykkäykset -->
+					<a class="btn btn-md btn-light" sec:authorize="isAuthenticated()" th:href="@{/recipe/{id}/likes(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Tykkäykset</a>
+					<!-- muokkaus ja poisto: painikkeet näytetään vain tekijälle tai adminille -->
+					<a th:if="${recipeOwner} == 'isRecipeOwner'" class="btn btn-md btn-light" sec:authorize="isAuthenticated()" th:href="@{/editrecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Muokkaa</a>
+					<a th:if="${recipeOwner} == 'isRecipeOwner'" class="btn btn-md btn-light" sec:authorize="isAuthenticated()" th:href="@{/deleterecipe/{id}(id=${recipe.id})}" th:style="|background-color:${recipe.category.color};width:150px|">Poista</a>
 				</div>
 				<!-- kommentit -->
 				<div class="container" th:style="|border-top:3px solid ${recipe.category.color}|">
@@ -118,7 +132,7 @@
 						</div>
 						<div class="col-8" style="margin:auto;text-align:left">
 							<p style="font-size:12px;font-weight:bold" th:text="|${comment.commenter.username}|"/>
-							<p style="font-size:12px" th:text="${comment.message}"/>
+							<p style="font-size:12px;white-space:pre-wrap" th:text="${comment.message}"/>
 						</div>
 						<div class="col-2" style="margin:auto">
 							<a class="btn btn-sm" sec:authorize="hasAuthority('ADMIN')" th:href="@{/deletecomment/{commentid} (commentid=${comment.id})}" th:style="|background-color:${recipe.category.color}|"> X </a>

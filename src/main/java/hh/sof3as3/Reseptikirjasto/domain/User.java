@@ -10,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -41,6 +44,17 @@ public class User {
 	// viiteavainattribuutti käyttäjän luomille kommenteille
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "commenter")
 	private List<Comment> myComments;
+	
+	// viiteavainattribuutti tykätyille resepteille
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(
+				name = "recipeLike", 
+				joinColumns = @JoinColumn(name = "userid"), 
+				inverseJoinColumns = @JoinColumn(name = "recipeid")
+			   )
+	private List<Recipe> likedRecipes;
+	
 	
 	// konstruktorit
 	public User() {
@@ -91,11 +105,17 @@ public class User {
 	public void setMyComments(List<Comment> myComments) {
 		this.myComments = myComments;
 	}
+	public List<Recipe> getLikedRecipes() {
+		return likedRecipes;
+	}
+	public void setLikedRecipes(List<Recipe> likedRecipes) {
+		this.likedRecipes = likedRecipes;
+	}
 	
 	// toString
 	@Override
 	public String toString() {
-		return "id=" + id + ", username=" + username + ", password=" + passwordHash + ", role=" + role;
+		return "id=" + id + ", username=" + username + ", role=" + role;
 	}
 	
 	

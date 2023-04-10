@@ -23,7 +23,7 @@ public class WebSecurityConfig {
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/allrecipes", "/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille
+				.requestMatchers("/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille
 				.requestMatchers("/signup", "/saveuser").anonymous() // vain kirjautumattomille
 				
 				.requestMatchers(toH2Console()).permitAll() // h2-consolen salliminen
