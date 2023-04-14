@@ -20,20 +20,24 @@ import jakarta.persistence.Table;
 @Table(name="users")
 public class User {
 	
-	// attribuutit
+	// attribuutit:
 	
+	// yksilöivä id-arvo
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id", nullable=false, updatable=false)
 	private Long id; 
 	
+	// käyttäjätunnus
 	@Column(name="username", nullable=false, unique=true)
 	private String username;
 	
+	// salasana encryptattuna
 	@Column(name="password", nullable=false)
 	@JsonIgnore // piilottaa salasanan kaikissa rest-pyynnöissä (myös data rest)
 	private String passwordHash;
 	
+	// käyttäjärooli
 	@Column(name="role", nullable=false)
 	private String role;
 	

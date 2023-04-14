@@ -36,7 +36,6 @@ public class UserController {
 	@PostMapping("/saveuser")
 	@PreAuthorize("!hasAnyAuthority('Admin', 'USER')") // vain kirjautumaton käyttäjä
 	public String saveUser(@Valid @ModelAttribute("signupform") SignupForm signupForm, BindingResult bindingResult) {
-		
 		if (!bindingResult.hasErrors()) {
 			// tarkistetaan että syötetyt password-kentät ovat samat
 			// ja encryptataan salasana

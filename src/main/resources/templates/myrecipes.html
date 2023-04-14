@@ -4,18 +4,7 @@
 	<title>Reseptikirjasto</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
-	<style>
-		
-		table {
-			border: 1px solid;
-		}
-		th {
-			border: 1px solid;
-		}
-		td {
-			border: 1px solid;
-		}
-	</style>
+
 </head>
 <body>
 <div style="text-align:center">
@@ -68,18 +57,16 @@
 				<th>Annosmäärä</th>
 				<th>Aika</th>
 				<th>Kategoria</th>
-				<th>Tekijä</th>
-				<th sec:authorize="hasAuthority('USER')"></th>
-				<th sec:authorize="hasAuthority('USER')"></th>
+				<th></th>
+				<th></th>
 			</tr>
 			<tr th:each="recipe : ${recipes}">
-				<td><a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}" ></a></td>
+				<td><a class="link-dark" th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}" ></a></td>
 				<td th:text="${recipe.numberOfServings}" />
 				<td th:text="${recipe.getTimeStr}" />
-				<td th:text="${recipe.category.name}" />
-				<td th:text="${recipe.author.username}" />
-				<td sec:authorize="hasAnyAuthority('USER', 'ADMIN')"><a th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
-				<td sec:authorize="hasAnyAuthority('USER', 'ADMIN')"><a th:href="@{/delete/{id}(id=${recipe.id})}">Poista</a></td>
+				<td th:text="${recipe.category.name}" th:style="|background-color:${recipe.category.color}|" />
+				<td><a class="link-dark" th:href="@{/editrecipe/{id}(id=${recipe.id})}">Muokkaa</a></td>
+				<td><a class="link-dark" th:href="@{/deleterecipe/{id}(id=${recipe.id})}">Poista</a></td>
 			</tr>
 		</table>
 	</div>

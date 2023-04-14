@@ -12,28 +12,40 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Comment {
 	
-	// attribuutit
+	// attribuutit: 
+	
+	// yksilöivä id-arvo
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
 	private Long id;
+	
+	// viestin sisältö
+	@Size(min=2, max=250)
 	private String message;
+	
+	// aikaleima milloin viesti lähetetty
 	private Timestamp timestamp;
+	
 	// viiteavainattribuutti käyttäjälle joka luo kommentin
 	@JsonIgnoreProperties({"password", "role", "myRecipes", "myComments"})
 	@ManyToOne
 	@JoinColumn(name="commenterid")
 	private User commenter;
+	
 	// viiteavainattribuutti reseptille
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="recipeid")
 	private Recipe recipe;
 
-	// konstruktorit
+	// konstruktorit: 
+	
 	public Comment() {
 		this.message = null;
 		this.timestamp = null;
@@ -47,7 +59,8 @@ public class Comment {
 		this.recipe = recipe;
 	}
 	
-	// getterit ja setterit
+	// getterit ja setterit:
+	
 	public Long getId() {
 		return id;
 	}
@@ -82,7 +95,8 @@ public class Comment {
 		this.recipe = recipe;
 	}
 	
-	// toString
+	// toString: 
+	
 	@Override
 	public String toString() {
 		return "id=" + id + ", message=" + message + ", timestamp=" + timestamp + ", commenter=" + commenter.getUsername() + ", recipe=" + recipe.getName();

@@ -10,22 +10,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Category {
 	
-	// attribuutit
+	// attribuutit: 
+	
+	// yksilöivä id-arvo
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
-	private Long id; // yksilöivä id-arvo
-	private String name; // kategorian nimi
-	private String color; // korostusväri, jolla kategoria näkyy reseptien listausnäkymässä ym (esim. "#ffffff")
+	private Long id;
+	
+	// kategorian nimi
+	@Size(min=5, max=30)
+	private String name;
+	
+	// korostusväri, jolla kategoria näkyy reseptien listausnäkymässä ym (esim. "#ffffff")
+	@NotNull
+	private String color;
+	
 	// viiteavainattribuutti resepteille
 	@JsonIgnore // blokataan kategorian reseptilista jotta vältetään loputon loop
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "category") // todo: mieti cascadetype
 	private List<Recipe> recipes;
 	
-	// konstruktorit
+	// konstruktorit:
+	
 	public Category() {
 		this.name = null;
 		this.color = null;
@@ -35,7 +47,8 @@ public class Category {
 		this.color = color;
 	}
 	
-	// getterit ja setterit
+	// getterit ja setterit:
+	
 	public Long getId() {
 		return id;
 	}
@@ -61,7 +74,8 @@ public class Category {
 		this.recipes = recipes;
 	}
 	
-	// toString
+	// toString: 
+	
 	@Override
 	public String toString() {
 		return "id=" + id + ", name=" + name + ", color=" + color;

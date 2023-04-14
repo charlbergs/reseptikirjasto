@@ -53,30 +53,16 @@
 		</div>
 	</div>
 	
-	<h3>Kategoriat</h3>	
-	<!-- kategorian lisäys -->
-	<form id="addCategoryForm" method="post" action="#" th:action="@{/addcategory}" th:object="${newCategory}" style="padding:10px">
-		<input type="text" placeholder="kategorian nimi" th:field="${newCategory.name}" required />
-		<input type="color" style="height:21px;width:20px" th:field="${newCategory.color}" required />
-		<input type="submit" value="Lisää" />
-		<p class="error" th:if="${#fields.hasErrors('name')}" th:errors="${newCategory.name}">Error</p>
-		<p class="error" th:if="${#fields.hasErrors('color')}" th:errors="${newCategory.color}">Error</p>
+	<!-- kategorian muokkaus  -->
+	<h3>Kategorian muokkaus</h3>	
+	<form id="editCategoryForm" method="post" action="#" th:action="@{/savecategory}" th:object="${category}" style="padding:10px">
+		<input type="hidden" th:field="${category.id}" />
+		<input type="text" th:field="${category.name}" required />
+		<input type="color" style="height:21px;width:20px" th:field="${category.color}" required/>
+		<input type="submit" value="Tallenna" />
+		<p class="error" th:if="${#fields.hasErrors('name')}" th:errors="${category.name}">Error</p>
+		<p class="error" th:if="${#fields.hasErrors('color')}" th:errors="${category.color}">Error</p>
 	</form>
-	<!-- kategorialistaus -->
-	<table class="table table-bordered" style="width:60%;margin:auto">
-		<tr>
-			<th>Nimi</th>
-			<th>Väri</th>
-			<th></th>
-			<th></th>
-		</tr>
-		<tr th:each="category : ${categories}">
-			<td th:text="${category.name}" />
-			<td th:text="${category.color}" th:style="|background-color:${category.color}|" />
-			<td><a th:href="@{/editcategory/{id}(id=${category.id})}">Muokkaa</a></td>
-			<td><a th:href="@{/deletecategory/{id}(id=${category.id})}">Poista</a></td>
-		</tr>
-	</table>
 </div>
 </body>
 </html>

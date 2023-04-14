@@ -8,6 +8,9 @@
 		input[type='number'] {
     		width: 45px;
 		}
+		.error {
+			color:#ff0000
+		}
 	</style>
 </head>
 <body>
@@ -56,31 +59,36 @@
 	<div class="container" style="width:600px;text-align:left;padding:10px">
 		<h3 th:text="${header}"></h3>
 		<form id="recipeform" method="post" action="#" th:action="@{/saverecipe}" th:object="${recipe}">
-		<!-- id-arvo ja tekijä piilotettuna jotta saadaan kuljetettua mukana -->
-		<input type="hidden" th:field="${recipe.id}"/>
-		<input type="hidden" th:field="${recipe.author}"/>
-		<p>
-			<label>Nimi: </label>
-			<input type="text" size="45" th:field="${recipe.name}" required />
-		</p>
-		<p>
-			<label for="categorylist">Kategoria: </label>
-			<select id="categorylist" th:field="*{category}">
-				<option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-			</select>
-		</p>
-		<p>
-			<label>Annosmäärä: </label>
-			<input type="number" th:field="${recipe.numberOfServings}" required />
-			<label>Valmistusaika: </label>
-			<input type="time" th:field="${recipe.time}" required /> <!-- todo fix: time-kenttä tyhjenee muokkauslomakkeella -->
-		</p>
-		<p><label>Ainesosat: </label></p>
-		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.listOfIngredients}" required></textarea></p>
-		<p><label>Valmistusohjeet: </label></p>
-		<p><textarea form="recipeform" cols="50" rows="10" maxlength="1000" th:field="${recipe.instructions}" required></textarea></p>
-		<input type="submit" value="Tallenna"/> <input type="reset" value="Palauta" /> <input type="button" value="Takaisin" onclick="history.back()"> <!-- takaisin-nappi vie edelliselle sivulle -->
-	</form>
+			<!-- id-arvo ja tekijä piilotettuna jotta saadaan kuljetettua mukana -->
+			<input type="hidden" th:field="${recipe.id}"/>
+			<input type="hidden" th:field="${recipe.author}"/>
+			<div>
+				<label>Nimi: </label>
+				<input type="text" size="45" th:field="${recipe.name}" required />
+				<p class="error" th:if="${#fields.hasErrors('name')}" th:errors="${recipe.name}">Error</p>
+			</div>
+			<div>
+				<label for="categorylist">Kategoria: </label>
+				<select id="categorylist" th:field="${recipe.category}" required>
+					<option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+				</select>
+			</div>
+			<div>
+				<label>Annosmäärä: </label>
+				<input type="number" th:field="${recipe.numberOfServings}" required />
+				<p class="error" th:if="${#fields.hasErrors('numberOfServings')}" th:errors="${recipe.numberOfServings}">Error</p>
+				<label>Valmistusaika: </label>
+				<input type="text" placeholder="HH.MM" size="4" th:field="${recipe.time}" required />
+				<p class="error" th:if="${#fields.hasErrors('time')}" th:errors="${recipe.time}">Error</p>
+			</div>
+			<p><label>Ainesosat: </label></p>
+			<p><textarea form="recipeform" cols="50" rows="10" th:field="${recipe.listOfIngredients}" required></textarea></p>
+			<p class="error" th:if="${#fields.hasErrors('listOfIngredients')}" th:errors="${recipe.listOfIngredients}">Error</p>
+			<p><label>Valmistusohjeet: </label></p>
+			<p><textarea form="recipeform" cols="50" rows="10" th:field="${recipe.instructions}" required></textarea></p>
+			<p class="error" th:if="${#fields.hasErrors('instructions')}" th:errors="${recipe.instructions}">Error</p>
+			<input type="submit" value="Tallenna"/> <input type="reset" value="Palauta" /> <input type="button" value="Takaisin" onclick="history.back()"> <!-- takaisin-nappi vie edelliselle sivulle -->
+		</form>
 	</div>
 </div>
 </body>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import hh.sof3as3.Reseptikirjasto.domain.User;
 import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
 
 @Controller
+@EnableMethodSecurity(securedEnabled = true)
 public class LikeController {
 	
 	@Autowired
@@ -69,16 +71,6 @@ public class LikeController {
 			user.setLikedRecipes(likedRecipes); // asetetaan lista käyttäjälle
 			userRepository.save(user); // viedään tietokantaan
 		}
-		// lisää käyttäjän reseptin tykkääjiin
-		List<User> likes = new ArrayList<User>(); // luodaan lista tykkäyksille
-		if (recipe.getLikes() != null) {
-			likes = recipe.getLikes(); // jos repositoryn tykkäyslista ei tyhjä niin haetaan reseptin tykkäykset listalle
-		}
-		if (!likes.contains(user)) {
-			likes.add(user); // lisätään käyttäjä tykkääjiin jos ei vielä listalla
-			recipe.setLikes(likes); // asetetaan lista reseptille
-			recipeRepository.save(recipe); // viedään tietokantaan
-		}
 		return "redirect:/recipe/" + recipe.getId();
 	}
 	
@@ -93,11 +85,6 @@ public class LikeController {
 		likedRecipes.remove(recipe);
 		user.setLikedRecipes(likedRecipes);
 		userRepository.save(user);
-		// poistetaan käyttäjä reseptin tykkääjistä
-		List<User> likes = recipe.getLikes();
-		likes.remove(user);
-		recipe.setLikes(likes);
-		recipeRepository.save(recipe);
 		return "redirect:/recipe/" + recipe.getId();
 	}
 	

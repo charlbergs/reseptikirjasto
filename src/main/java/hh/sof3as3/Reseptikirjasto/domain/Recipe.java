@@ -1,13 +1,15 @@
 package hh.sof3as3.Reseptikirjasto.domain;
 
 import java.util.List;
+
+import org.hibernate.validator.constraints.Range;
+
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,25 +18,38 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Recipe {
 	
-	// attribuutit
+	// attribuutit:
 	
+	// yksilöivä id-arvo
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
-	private Long id; // yksilöivä id-arvo
+	private Long id;
 	
-	private String name; // reseptin nimi
-	private int numberOfServings; // annosmäärä
-	private LocalTime time; // valmistusaika
+	// reseptin nimi
+	@Size(min=3, max=40)
+	private String name;
 	
-	@Column(length=1000) 
-	private String listOfIngredients; // tarvittavat ainesosat (column lengthillä maksimimerkkimäärä, koska muuten sql ei huoli pitkiä tekstejä)
+	// annosmäärä
+	@Range(min=1, max=99)
+	private int numberOfServings;
 	
-	@Column(length=1000) 
-	private String instructions; // valmistusohjeet
+	// valmistusaika
+	@NotNull
+	private LocalTime time;
+	
+	// valmistukseen tarvittavat ainesosat
+	@Size(min=5, max=800)
+	private String listOfIngredients;
+	
+	// valmistusohjeet
+	@Size(min=5, max=800) 
+	private String instructions;
 	
 	// viiteavainattribuutti kategorialle
 	@JsonIgnoreProperties({"color"})
@@ -58,10 +73,11 @@ public class Recipe {
 	@ManyToMany(mappedBy = "likedRecipes")
 	private List<User> likes;
 	
-	// konstruktorit
+	// konstruktorit:
+	
 	public Recipe() {
 		this.name = null;
-		this.numberOfServings = 0;
+		this.numberOfServings = 1;
 		this.time = null;
 		this.listOfIngredients = null;
 		this.instructions = null;
@@ -78,7 +94,8 @@ public class Recipe {
 		this.author = author;
 	}
 	
-	// getterit ja setterit
+	// getterit ja setterit:
+	
 	public Long getId() {
 		return id;
 	}
@@ -152,12 +169,14 @@ public class Recipe {
 		this.likes = likes;
 	}
 	
-	// toString
+	// toString:
+	
 	@Override
 	public String toString() {
 		return "id=" + id + ", name=" + name + ", numberOfServings=" + numberOfServings + ", time=" + time
 				+ ", listOfIngredients=" + listOfIngredients + ", instructions=" + instructions 
-				+ ", category=" + category.getName() + ", user=" + author.getUsername();
+				+ ", category=" + ((category != null) ? category.getName() : "") // jos tyhjä niin palauttaa ""
+				+ ", author=" + ((author != null) ? author.getUsername() : ""); // jos tyhjä niin palauttaa ""
 	}
 	
 

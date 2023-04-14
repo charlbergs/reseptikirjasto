@@ -23,22 +23,22 @@ public class WebSecurityConfig {
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests()
-				.requestMatchers("/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille
-				.requestMatchers("/signup", "/saveuser").anonymous() // vain kirjautumattomille
-				
-				.requestMatchers(toH2Console()).permitAll() // h2-consolen salliminen
+				.requestMatchers("/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille: reseptilistaus, yksittäisen reseptin näkymä, css jotta muotoilu näkyy
+				.requestMatchers("/signup").anonymous() // vain kirjautumattomille: rekisteröitymislomake
+				.requestMatchers("/categorylist", "/api/**").hasAuthority("ADMIN") // vain adminille: kategorioiden hallinta, autogeneroidut rest-metodit
+				.requestMatchers(toH2Console()).permitAll() // h2-console
 				.anyRequest().authenticated()
 				.and()
-				.csrf().ignoringRequestMatchers(toH2Console())
+				.csrf().ignoringRequestMatchers(toH2Console()) // h2-console
 				  .and()
 				  .headers().frameOptions().disable()
 				  .and()
 			.formLogin()
-				.defaultSuccessUrl("/recipelist", true)
+				.defaultSuccessUrl("/recipelist", true) // sisäänkirjautumisen jälkeen ohjataan reseptilistaussivulle
 				.permitAll()
 				.and()
 			.logout()
-				.logoutSuccessUrl("/recipelist")
+				.logoutSuccessUrl("/recipelist") // myös uloskirjautumisen jälkeen ohjataan reseptilistaussivulle
 				.permitAll()
 				.and()
 			.httpBasic();

@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -20,6 +22,7 @@ import hh.sof3as3.Reseptikirjasto.domain.Recipe;
 import hh.sof3as3.Reseptikirjasto.domain.RecipeRepository;
 import hh.sof3as3.Reseptikirjasto.domain.User;
 import hh.sof3as3.Reseptikirjasto.domain.UserRepository;
+import jakarta.validation.Valid;
 
 @Controller
 @EnableMethodSecurity(securedEnabled = true)
@@ -127,20 +130,31 @@ public class RecipeController {
 	// reseptin lisäys/muokkaus: post
 	@PostMapping("/saverecipe")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain kirjautunut käyttäjä tai admin
-	public String postRecipeForm(Recipe recipe) {
-		recipeRepository.save(recipe);
-		return "redirect:/recipe/" + recipe.getId(); // uudelleenohjataan reseptinäkymään
+	public String postRecipeForm(@Valid @ModelAttribute("recipe") Recipe recipe, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) { // validointi: jos lähetetyissä tiedoissa virheitä, palataan formille
+			if (bindingResult.hasFieldErrors("time")) { // ajalle oma tarkentava errorviesti
+				bindingResult.rejectValue("time", "err.timeValueRejected", "give value as hh.mm / h.mm / hh:mm");
+			}
+			model.addAttribute("categories", categoryRepository.findAll()); // välitetään kategoriat uudestaan koska muuten tyhjä
+			return "recipeform";
+		} else { // validointi: jos lähetetyissä tiedoissa ei virheitä, lähetys onnistuu ja resepti tallennetaan repositorioon
+			recipeRepository.save(recipe);
+			return "redirect:/recipe/" + recipe.getId(); // uudelleenohjataan reseptinäkymään
+    	}
 	}
 	
 	// reseptin poistaminen
 	@GetMapping("/deleterecipe/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-	public String deleteRecipe(@PathVariable("id") Long id, Model model) {
-		// tarkistetaan että kirjautunut käyttäjä on reseptin tekijä tai admin,
-		// muuten poisto epäonnistuu
+	public String deleteRecipe(@PathVariable("id") Long id) {
 		User user = getCurrentUser();
 		Recipe recipe = recipeRepository.findById(id).get();
+		// tarkistetaan että kirjautunut käyttäjä on reseptin tekijä tai admin
 		if (recipe.getAuthor() == user || user.getRole() == "ADMIN") {
+			// jos reseptillä tykkäyksiä, poistetaan ne (poistuu myös käyttäjän tykkäyksistä)
+			if (recipe.getLikes() != null) {
+				recipe.getLikes().clear();
+			}
 			recipeRepository.deleteById(id);
 		}
 		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään
