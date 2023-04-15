@@ -1,6 +1,7 @@
 package hh.sof3as3.Reseptikirjasto;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.sql.Timestamp;
 
 import org.springframework.boot.CommandLineRunner;
@@ -40,7 +41,7 @@ public class ReseptikirjastoApplication {
 			// testikategoriat
 			Category categ1 = new Category("Jälkiruoat", "#2596be");
 			Category categ2 = new Category("Aamupalat", "#56ba47");
-			Category categ3 = new Category("Keitot", "#be4d25");
+			Category categ3 = new Category("Keitot", "#fe9116");
 			// tallennetaan  repositorioon
 			categoryRepository.save(categ1);
 			categoryRepository.save(categ2);
@@ -49,7 +50,7 @@ public class ReseptikirjastoApplication {
 			// testireseptit
 			Recipe rec1 = new Recipe(
 				"Munakas", 1, LocalTime.of(0, 15), 
-				"- 2 kananmunaa \n"
+				"- pari kananmunaa \n"
 				+ "- loraus maitoa \n"
 				+ "- suolaa, pippuria \n"
 				+ "- öljyä paistamiseen", 
@@ -76,7 +77,7 @@ public class ReseptikirjastoApplication {
 				categ3, user1
 			);
 			Recipe rec3 = new Recipe(
-				"Mustikkapiirakka kermaviilillä", 8, LocalTime.of(0, 45),
+				"Mustikkapiirakka", 8, LocalTime.of(0, 45),
 				"Pohja:\n"
 				+ "- 100 g voita\n"
 				+ "- 0,75 dl sokeria\n"
@@ -114,20 +115,105 @@ public class ReseptikirjastoApplication {
 				+ "5. Tarjoa haluamasi täytteen kanssa. Jos haluat täyttää letut suolaisella täytteellä, voi taikinasta myös jättää sokerin pois.\n",
 				categ1, user2
 			);
+			Recipe rec5 = new Recipe(
+				"Ramen-keitto", 4, LocalTime.of(0, 30),
+				"Liemi:\n"
+				+ "- 1,2 l vettä\n"
+				+ "- 1 kasvis- tai kanaliemikuutio\n"
+				+ "- 2 rkl misotahnaa\n"
+				+ "- 1 pala inkivääriä\n"
+				+ "- chiliä maun mukaan\n"
+				+ "- 2 valkosipulinkynttä\n"
+				+ "- 1,5 tl sokeria\n"
+				+ "- seesamiöljyä\n"
+				+ "- 2 rkl soijakastiketta\n"
+				+ "\n"
+				+ "Lisukkeet esim.:\n"
+				+ "- vehnä- tai munanuudeleita\n"
+				+ "- keitetyt kananmunat 1kpl per syöjä\n"
+				+ "- tofua / kypsennettyä porsaanlihaa / kanaa / tms.\n"
+				+ "- kevätsipulia\n"
+				+ "- pinaattia / lehtikaalia\n"
+				+ "- maissia",
+				"1. Hienonna inkivääri ja valkosipulinkynnet.\n"
+				+ "2. Keitä vesi ja lisää liemikuutio, misotahna, sokeri, seesamiöljy ja soijakastile. Laita mukaan myös inkivääri, valkosipulit ja chili. Anna kiehua miedolla lämmöllä vähintään 15 minuuttia.\n"
+				+ "3. Keitä ja valuta nuudelit.\n"
+				+ "4. Valmista loput lisukkeet tarpeen mukaan. Hienonna kevätsipuli, paista pinaattia hetki pannulla. Jos käytät tofua, kuutioi ja paista se pannulla erikseen. Jos käytät lihaa, viipaloi tai revi se sopiviksi paloiksi. Keitä kananmunat ja halkaise ne pitkittäin kahtia.\n"
+				+ "5. Aseta lisukkeet syville lautasille ja kaada liemi päälle. Nauti kuumana.",
+				categ3, user1
+			);
+			Recipe rec6 = new Recipe(
+				"Aamiaispannarit", 2, LocalTime.of(0, 45),
+				"- 2 kananmunaa\n"
+				+ "- 3 dl maitoa tai piimää\n"
+				+ "- 1 rkl voita\n"
+				+ "- 2,5 dl vehnäjauhoja\n"
+				+ "- 1 rkl sokeria\n"
+				+ "- 1 tl leivinjauhoja\n"
+				+ "- hieman suolaa\n"
+				+ "+ voita paistamiseen",
+				"1. Sulata voi. Mittaa kulhoon munat, maito tai piimä sekä jäähtynyt voi ja vatkaa tasaiseksi.\n"
+				+ "2. Sekoita kuivat aineet keskenään ja yhdistä seokseen. Älä sekoita liikaa jotta taikina pysyy kuohkeana ja pannukakuista tulee paksuja.\n"
+				+ "3. Anna taikinan levätä hetki.\n"
+				+ "4. Parhaiten pannukakut valmistuvat lettupannulla tai muulla pienellä pannulla. Kuumenna pannu kuumaksi ja alenna sitten tehoa. Paista pannukakut voissa kummaltakin puolelta kunnes pinta on kauniin ruskea. \n"
+				+ "4. Syö vaahterasiirapin ja marjojen kera.",
+				categ2, user2
+			);
+			Recipe rec7 = new Recipe(
+				"Lohikeitto", 4, LocalTime.of(0, 25),
+				"- 6 perunaa\n"
+				+ "- 4 porkkanaa\n"
+				+ "- 1 sipuli\n"
+				+ "- 1 pala purjoa\n"
+				+ "- 8 dl vettä\n"
+				+ "- 2 kalaliemikuutiota\n"
+				+ "- 1 laakerinlehti\n"
+				+ "- n. 8 kpl kokonaisia maustepippureita\n"
+				+ "- 400 g lohta\n"
+				+ "- 2 dl kermaa\n"
+				+ "- suolaa\n"
+				+ "- tuoretta tilliä hienonnettuna",
+				"1. Kuori ja paloittele perunat, porkkanat, sipuli ja purjo. Laita kattilaan ja kuullota. \n"
+				+ "2. Lisää vesi, liemikuutiot, laakerinlehti ja pippurit. Keitä vihannekset lähes kypsiksi.\n"
+				+ "3. Poista lohesta ruodot ja nahka. Leikkaa kuutioiksi. \n"
+				+ "4. Lisää lohi ja kerma kattilaan, ja mausta suolalla. Anna kiehua n. 5 min kunnes lohi on kypsää.\n"
+				+ "5. Lisää lopuksi päälle tilli. Tarkista maku ja lisää suolaa tai pippuria tarvittaessa.",
+				categ3, user1
+			);
 			// tallennetaan repositorioon
 			recipeRepository.save(rec1);
 			recipeRepository.save(rec2);
 			recipeRepository.save(rec3);
 			recipeRepository.save(rec4);
+			recipeRepository.save(rec5);
+			recipeRepository.save(rec6);
+			recipeRepository.save(rec7);
 			
 			// testikommentit & timestamp
 			// huom. timestampit: System.currentTimeMillis antaa nykyhetken, Timestamp.valueOf määritellyn aikaleiman
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			Comment comment1 = new Comment("Hyvä ohje!", timestamp, user1, rec3);
+			Comment comment1 = new Comment("Toimii hyvin myös jos lisää kasviksia tai sieniä ym mukaan paistaessa :)", Timestamp.valueOf("2023-04-09 18:43:40"), user2, rec1);
+			Comment comment2 = new Comment("Hyvä ohje!", timestamp, admin, rec1);
+			Comment comment3 = new Comment("Lempiruokaani <3", Timestamp.valueOf("2023-04-01 09:01:15"), user2, rec2);
+			Comment comment4 = new Comment("Kokeilin. En onnistunut :(", Timestamp.valueOf("2023-04-12 15:13:29"), user1, rec4);
+			Comment comment5 = new Comment("Tämä lähtee kokeiluun heti huomenna!", Timestamp.valueOf("2023-04-08 21:55:02"), user2, rec5);
 			commentRepository.save(comment1);
-			Comment comment2 = new Comment("Lempiruokaani <3", Timestamp.valueOf("2023-04-01 09:01:15"), user2, rec2);
 			commentRepository.save(comment2);
-	
+			commentRepository.save(comment3);
+			commentRepository.save(comment4);
+			commentRepository.save(comment5);
+			
+			// testitykkäykset:
+			// asetetaan muutamalle reseptille tykkääjiksi kaikki 3 käyttäjää
+			List<User> users = (List<User>) userRepository.findAll();
+			rec1.setLikes(users);
+			rec3.setLikes(users);
+			rec7.setLikes(users);
+			recipeRepository.save(rec1);
+			recipeRepository.save(rec3);
+			recipeRepository.save(rec7);
+			
+			
 		};
 	}
 

@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -70,7 +71,12 @@ public class Recipe {
 	
 	// viiteavainattribuutti tykkäyksille
 	@JsonIgnore
-	@ManyToMany(mappedBy = "likedRecipes")
+	@ManyToMany
+	@JoinTable(
+			name = "recipeLike", 
+			joinColumns = @JoinColumn(name = "recipeid"), 
+			inverseJoinColumns = @JoinColumn(name = "userid")
+		   )
 	private List<User> likes;
 	
 	// konstruktorit:

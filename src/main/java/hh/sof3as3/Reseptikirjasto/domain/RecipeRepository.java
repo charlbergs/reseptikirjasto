@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RecipeRepository extends CrudRepository<Recipe, Long> {
 	
-	List<Recipe> findByAuthor(User user);
+	List<Recipe> findByAuthor(User user); // palauttaa listalle käyttäjän kaikki reseptit
 
 }

@@ -151,10 +151,6 @@ public class RecipeController {
 		Recipe recipe = recipeRepository.findById(id).get();
 		// tarkistetaan että kirjautunut käyttäjä on reseptin tekijä tai admin
 		if (recipe.getAuthor() == user || user.getRole() == "ADMIN") {
-			// jos reseptillä tykkäyksiä, poistetaan ne (poistuu myös käyttäjän tykkäyksistä)
-			if (recipe.getLikes() != null) {
-				recipe.getLikes().clear();
-			}
 			recipeRepository.deleteById(id);
 		}
 		return "redirect:/recipelist"; // uudelleenohjataan listausnäkymään

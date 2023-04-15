@@ -61,6 +61,16 @@ public class LikeController {
 		User user = getCurrentUser(); // haetaan kirjautunut käyttäjä
 		Recipe recipe = recipeRepository.findById(recipeid).get(); // haetaan resepti
 		
+		// lisää käyttäjän reseptin tykkääjiin
+		List<User> likes = new ArrayList<User>(); // luodaan lista käyttäjille
+		if (recipe.getLikes() != null) {
+			likes = recipe.getLikes(); // jos repositoryn lista ei tyhjä niin haetaan tykkääjät listalle
+		}
+		if (!likes.contains(user)) {
+			likes.add(user); // lisätään käyttäjä tykkääjiin jos ei vielä listalla
+			recipe.setLikes(likes); // asetetaan lista reseptille
+			recipeRepository.save(recipe); // viedään tietokantaan
+		}
 		// lisää reseptin käyttäjän tykättyihin resepteihin
 		List<Recipe> likedRecipes = new ArrayList<Recipe>(); // luodaan lista tykkäyksille
 		if (user.getLikedRecipes() != null) {
@@ -80,6 +90,12 @@ public class LikeController {
 	public String deleteLike(@PathVariable("recipeid") Long recipeid) {
 		User user = getCurrentUser(); // haetaan kirjautunut käyttäjä
 		Recipe recipe = recipeRepository.findById(recipeid).get(); // haetaan resepti
+		
+		// poistetaan käyttäjä reseptin tykkääjistä
+		List<User> likes = recipe.getLikes();
+		likes.remove(user);
+		recipe.setLikes(likes);
+		recipeRepository.save(recipe);
 		// poistetaan resepti käyttäjän tykkäyksistä
 		List<Recipe> likedRecipes = user.getLikedRecipes();
 		likedRecipes.remove(recipe);

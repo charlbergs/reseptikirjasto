@@ -10,8 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -51,12 +49,7 @@ public class User {
 	
 	// viiteavainattribuutti tykätyille resepteille
 	@JsonIgnore
-	@ManyToMany
-	@JoinTable(
-				name = "recipeLike", 
-				joinColumns = @JoinColumn(name = "userid"), 
-				inverseJoinColumns = @JoinColumn(name = "recipeid")
-			   )
+	@ManyToMany(mappedBy = "likes")
 	private List<Recipe> likedRecipes;
 	
 	
