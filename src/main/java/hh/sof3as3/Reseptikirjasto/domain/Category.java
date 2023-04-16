@@ -33,7 +33,7 @@ public class Category {
 	
 	// viiteavainattribuutti resepteille
 	@JsonIgnore // blokataan kategorian reseptilista jotta vältetään loputon loop
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "category") // todo: mieti cascadetype
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "category") // huom. kategorian poistaminen poistaa myös kaikki sen reseptit
 	private List<Recipe> recipes;
 	
 	// konstruktorit:

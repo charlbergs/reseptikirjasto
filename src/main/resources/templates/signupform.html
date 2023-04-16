@@ -4,28 +4,34 @@
 <head>
     <title>Reseptikirjasto</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 </head>
+<style>
+	.error {
+		color:#ff0000
+	}
+</style>
 <body>
-<div>
-	<h1>Rekisteröi uusi käyttäjä</h1>
-     <div>
-		<form th:object="${signupform}" th:action="@{/saveuser}" action="#" method="post">
-			<div>
-				<label> Käyttäjätunnus :<input type="text" th:field="*{username}" class="form-control"/></label>
-				<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" />	
-			</div>
-			<div>
-				<label> Salasana :<input type="password" th:field="*{password}" class="form-control"/></label>
-				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" />	
-			</div>
-			<div>
-				<label> Toista salasana: <input type="password" th:field="*{passwordCheck}" class="form-control"/></label>
-				<p th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" />	
-			</div>
-			
-			<input type="submit" class="btn btn-primary" value="Rekisteröidy"></input>		
-		</form>
+	<div style="width:60%;margin:auto;padding:30px">
+		<h1>Rekisteröi uusi käyttäjä</h1>
+	     <div>
+			<form th:object="${signupform}" th:action="@{/saveuser}" action="#" method="post">
+				<div>
+					<label> Käyttäjätunnus:<input class="form-control" type="text" th:field="${signupform.username}"/></label>
+					<p class="error" th:if="${#fields.hasErrors('username')}" th:errors="${signupform.username}"/>	
+				</div>
+				<div>
+					<label> Salasana:<input class="form-control" type="password" th:field="${signupform.password}"/></label>
+					<p class="error" th:if="${#fields.hasErrors('password')}" th:errors="${signupform.password}"/>	
+				</div>
+				<div>
+					<label> Toista salasana: <input class="form-control" type="password" th:field="${signupform.passwordCheck}"/></label>
+					<p class="error" th:if="${#fields.hasErrors('passwordCheck')}" th:errors="${signupform.passwordCheck}"/>	
+				</div>
+				
+				<input type="submit" class="btn btn-primary" style="margin-top:10px" value="Rekisteröidy"></input>		
+			</form>
+		</div>
 	</div>
-</div>
 </body>
 </html>

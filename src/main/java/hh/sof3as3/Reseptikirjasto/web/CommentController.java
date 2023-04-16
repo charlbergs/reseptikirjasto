@@ -41,32 +41,35 @@ public class CommentController {
 		return user;
 	}
 	
-	// kommentin lisäys
+	// huom. kommentit haetaan recipecontrollerin viewRecipe()-metodissa (yksittäisen reseptin katselunäkymä),
+	// siksi tässä controllerissa ei ole listausmetodia
+	
+	// kommentin lisäys, POST
 	@PostMapping("/savecomment")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain admin ja kirjautunut käyttäjä
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // admin ja kirjautunut käyttäjä
 	public String saveComment(@Valid @ModelAttribute("newComment") Comment comment, BindingResult bindingResult, Model model) {
+		// tarkistetaan validointi: jos virheitä, palataan takaisin lomakkeen täyttöön
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("recipe", recipeRepository.findById(comment.getRecipe().getId()).get()); // välitetään resepti uudestaan templatelle
 			return "recipeview"; // palataan
 		} else {
+		// jos ei virheitä, tallennetaan ja palataan reseptinäkymään
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			comment.setTimestamp(timestamp); // asetetaan timestamp
+			comment.setTimestamp(timestamp); // asetetaan timestampilla viestin lähetysajaksi nykyhetki
 			commentRepository.save(comment);
 			return "redirect:/recipe/" + comment.getRecipe().getId(); // uudelleenohjaus reseptinäkymään
 		}
 	}
 	
-	// kommentin poistaminen
+	// kommentin poistaminen, GET
 	@GetMapping("/deletecomment/{commentid}")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String deletecomment(@PathVariable("commentid") Long commentid) {
-		User user = getCurrentUser();
-		// haetaan resepti commentid:n avulla
-		Recipe recipe = commentRepository.findById(commentid).get().getRecipe();
-		// haetaan reseptin id redirectiä varten
-		Long recipeid = recipe.getId();
+		User user = getCurrentUser(); // haetaan kirjautunut käyttäjä
+		Recipe recipe = commentRepository.findById(commentid).get().getRecipe(); // haetaan resepti commentid:n avulla
+		Long recipeid = recipe.getId(); // otetaan reseptin id talteen redirectiä varten
 		// poisto onnistuu jos kirjautunut käyttäjä on admin
-		if (recipe.getAuthor() == user || user.getRole() == "ADMIN") {
+		if (user.getRole() == "ADMIN") {
 			commentRepository.deleteById(commentid);
 		}
 		return "redirect:/recipe/" + recipeid; // uudelleenohjaus takaisin reseptinäkymään

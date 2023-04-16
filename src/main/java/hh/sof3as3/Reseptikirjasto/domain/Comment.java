@@ -24,7 +24,7 @@ public class Comment {
 	@GeneratedValue(strategy=GenerationType.AUTO) // autogeneroidaan id
 	private Long id;
 	
-	// viestin sisältö
+	// kommentin sisältö
 	@Size(min=2, max=250)
 	private String message;
 	
@@ -37,7 +37,7 @@ public class Comment {
 	@JoinColumn(name="commenterid")
 	private User commenter;
 	
-	// viiteavainattribuutti reseptille
+	// viiteavainattribuutti reseptille jota kommentti koskee
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="recipeid")
@@ -75,7 +75,7 @@ public class Comment {
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}
-	public String getTimestampStr() { // palauttaa timestampin formatoituna stringinä
+	public String getTimestampStr() { // kustomoitu getteri joka palauttaa timestampin luettavammassa muodossa
 		return new SimpleDateFormat("d.M.yyyy H:mm:ss").format(timestamp);
 	}
 	public void setTimestamp(Timestamp timestamp) {

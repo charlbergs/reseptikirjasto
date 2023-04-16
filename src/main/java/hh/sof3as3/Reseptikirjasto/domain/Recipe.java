@@ -41,7 +41,7 @@ public class Recipe {
 	private int numberOfServings;
 	
 	// valmistusaika
-	@NotNull
+	@NotNull // vaikka validointi voisi olla spesifimpi kuin notnull, nyt jos recipeformilla syötetään aika väärässä muodossa, bindingresult vie kuitenkin halutusti takaisin lomakkeelle
 	private LocalTime time;
 	
 	// valmistukseen tarvittavat ainesosat
@@ -53,24 +53,25 @@ public class Recipe {
 	private String instructions;
 	
 	// viiteavainattribuutti kategorialle
-	@JsonIgnoreProperties({"color"})
+	@JsonIgnoreProperties({"color"}) // jotta rest-endpointit /recipes ja /recipes/id näyttäisivät kategoriasta pelkän id:n ja nimen
 	@ManyToOne
 	@JoinColumn(name="categoryid")
 	private Category category;
 	
 	// viiteavainattribuutti reseptin tekijälle
-	@JsonIgnoreProperties({"role", "myRecipes", "myComments"}) // blokataan tekijän myRecipes ja myComments jotta vältetään loputon loop
+	@JsonIgnoreProperties({"role", "myRecipes", "myComments"}) // rooli blokataan jotta /recipes ja /recipes/id näyttäisivät vain id:n ja käyttäjätunnuksen. myRecipes ja myComments blokataan jotta vältetään loputon loop
 	@ManyToOne
 	@JoinColumn(name="authorid")
 	private User author;
 	
 	// viiteavainattribuutti kommenteille
-	@JsonIgnore
+	@JsonIgnore // blokataan jottei näy endpointeissa /recipes ja /recipes/id
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
 	private List<Comment> comments;
 	
 	// viiteavainattribuutti tykkäyksille
-	@JsonIgnore
+	// ManyToMany-yhteys: määritellään recipen ja userin välille välitaulu, joka käyttää viiteavaimina molempien id:arvoja
+	@JsonIgnore // blokataan jotta vältetään loputon loop
 	@ManyToMany
 	@JoinTable(
 			name = "recipeLike", 
@@ -123,7 +124,7 @@ public class Recipe {
 	public LocalTime getTime() {
 		return time;
 	}
-	public String getTimeStr() { // palauttaa valmistusajan muodossa x h x min
+	public String getTimeStr() { // kustomoitu getteri joka palauttaa valmistusajan luettavammassa muodossa (x h x min)
 		String timeStr = "";
 		int hrs = time.getHour();
 		int mins = time.getMinute();

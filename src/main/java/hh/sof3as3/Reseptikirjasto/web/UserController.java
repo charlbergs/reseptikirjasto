@@ -24,7 +24,7 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 	
-	// hakee uuden käyttäjän rekisteröintilomakkeen
+	// hakee uuden käyttäjän rekisteröintilomakkeen, GET
 	@GetMapping("/signup")
 	@PreAuthorize("!hasAnyAuthority('Admin', 'USER')") // vain kirjautumaton käyttäjä
 	public String addUser(Model model) {
@@ -32,7 +32,7 @@ public class UserController {
         return "signupform";
     }	
 	
-	// luo uuden käyttäjän rekisteröintilomakkeelta
+	// luo uuden käyttäjän rekisteröintilomakkeelta, POST
 	@PostMapping("/saveuser")
 	@PreAuthorize("!hasAnyAuthority('Admin', 'USER')") // vain kirjautumaton käyttäjä
 	public String saveUser(@Valid @ModelAttribute("signupform") SignupForm signupForm, BindingResult bindingResult) {

@@ -24,8 +24,9 @@ public class WebSecurityConfig {
 		http
 			.authorizeHttpRequests()
 				.requestMatchers("/recipelist", "/recipe/**", "/css/**").permitAll() // kaikille rooleille: reseptilistaus, yksittäisen reseptin näkymä, css jotta muotoilu näkyy
-				.requestMatchers("/signup").anonymous() // vain kirjautumattomille: rekisteröitymislomake
-				.requestMatchers("/categorylist", "/api/**").hasAuthority("ADMIN") // vain adminille: kategorioiden hallinta, autogeneroidut rest-metodit
+				.requestMatchers("/categories/**", "/recipes/**", "/api/**").permitAll() // omat rest-metodit, autogeneroidut rest-metodit
+				.requestMatchers("/signup", "/login", "/saveuser").anonymous() // vain kirjautumattomille: rekisteröitymislomake, login, uuden käyttäjän tallennus
+				.requestMatchers("/categorylist").hasAuthority("ADMIN") // vain adminille: kategorioiden hallinta
 				.requestMatchers(toH2Console()).permitAll() // h2-console
 				.anyRequest().authenticated()
 				.and()

@@ -45,7 +45,7 @@ public class RecipeController {
 		return user;
 	}
 	
-	// listausnäkymä: hakee kaikki reseptit
+	// kaikkien reseptien listausnäkymä, GET
 	@GetMapping("/recipelist")
 	public String getAllRecipes(Model model) {
 		// haetaan tietokantaan tallennetut reseptit listalle
@@ -54,18 +54,8 @@ public class RecipeController {
 		model.addAttribute("recipes", recipes);
 		return "recipelist";
 	}
-	// hakee kirjautuneen käyttäjän omat reseptit
-	@GetMapping("/myrecipes")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-	public String getMyRecipes(Model model) {
-		// haetaan tietokantaan tallennetut reseptit listalle
-		List<Recipe> recipes = (List<Recipe>) recipeRepository.findByAuthor(getCurrentUser());
-		// välitetään templatelle
-		model.addAttribute("recipes", recipes);
-		return "myrecipes";
-		}
 	
-	// yksittäisen reseptin katselunäkymä
+	// yksittäisen reseptin katselunäkymä, GET
 	@GetMapping("/recipe/{recipeid}")
 	public String viewRecipe(@PathVariable("recipeid") Long recipeid, Model model) {
 		User user = getCurrentUser();
@@ -94,7 +84,18 @@ public class RecipeController {
 		return "recipeview";
 	}
 	
-	// reseptin lisäys: get
+	// käyttäjän omat reseptit, GET
+	@GetMapping("/myrecipes")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+	public String getMyRecipes(Model model) {
+		// haetaan tietokantaan tallennetut reseptit listalle
+		List<Recipe> recipes = (List<Recipe>) recipeRepository.findByAuthor(getCurrentUser());
+		// välitetään templatelle
+		model.addAttribute("recipes", recipes);
+		return "myrecipes";
+	}
+	
+	// reseptin lisäys, GET
 	@GetMapping("/addrecipe")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain kirjautunut käyttäjä tai admin
 	public String addNewRecipe(Model model) {
@@ -109,7 +110,7 @@ public class RecipeController {
 		return "recipeform";
 	}
 
-	// reseptin muokkaus: get
+	// reseptin muokkaus, GET
 	@GetMapping("/editrecipe/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String editRecipe(@PathVariable("id") Long id, Model model) {
@@ -127,12 +128,12 @@ public class RecipeController {
 		}
 	}
 	
-	// reseptin lisäys/muokkaus: post
+	// reseptin lisäys/muokkaus, POST
 	@PostMapping("/saverecipe")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')") // vain kirjautunut käyttäjä tai admin
 	public String postRecipeForm(@Valid @ModelAttribute("recipe") Recipe recipe, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) { // validointi: jos lähetetyissä tiedoissa virheitä, palataan formille
-			if (bindingResult.hasFieldErrors("time")) { // ajalle oma tarkentava errorviesti
+			if (bindingResult.hasFieldErrors("time")) { // ajalle oma tarkentava errorviesti (antaa myös pidemmän notnull-errorviestin)
 				bindingResult.rejectValue("time", "err.timeValueRejected", "give value as hh.mm / h.mm / hh:mm");
 			}
 			model.addAttribute("categories", categoryRepository.findAll()); // välitetään kategoriat uudestaan koska muuten tyhjä
@@ -143,7 +144,7 @@ public class RecipeController {
     	}
 	}
 	
-	// reseptin poistaminen
+	// reseptin poistaminen, POST
 	@GetMapping("/deleterecipe/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String deleteRecipe(@PathVariable("id") Long id) {

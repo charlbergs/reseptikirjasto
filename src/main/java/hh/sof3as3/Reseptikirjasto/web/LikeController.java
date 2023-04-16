@@ -34,7 +34,7 @@ public class LikeController {
 		return user;
 	}
 	
-	// näyttää reseptin tykkäykset
+	// näyttää reseptin tykkäykset, GET
 	@GetMapping("/recipe/{recipeid}/likes")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String showLikes(@PathVariable("recipeid") Long recipeid, Model model) {
@@ -44,7 +44,7 @@ public class LikeController {
 		return "recipelikes";
 	}
 	
-	// näyttää kirjautuneen käyttäjän tykätyt reseptit
+	// näyttää kirjautuneen käyttäjän tykätyt reseptit, GET
 	@GetMapping("/mylikes")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String showMylikes(Model model) {
@@ -54,14 +54,17 @@ public class LikeController {
 		return "mylikes";
 	}
 	
-	// lisää tykkäyksen
+	// tykkäyksen lisäys, POST
+	// varmuudeksi lisätään molempiin manytomany-yhteyden päihin, 
+	// eli user lisätään recipen likes-attribuuttiin, ja recipe userin likedRecipes-attribuuttiin.
+	// (periaatteessa toimii myös ilman jälkimmäistä)
 	@PostMapping("/addlike/{recipeid}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String addLike(@PathVariable("recipeid") Long recipeid) {
 		User user = getCurrentUser(); // haetaan kirjautunut käyttäjä
 		Recipe recipe = recipeRepository.findById(recipeid).get(); // haetaan resepti
 		
-		// lisää käyttäjän reseptin tykkääjiin
+		// lisätään käyttäjä reseptin tykkääjiin
 		List<User> likes = new ArrayList<User>(); // luodaan lista käyttäjille
 		if (recipe.getLikes() != null) {
 			likes = recipe.getLikes(); // jos repositoryn lista ei tyhjä niin haetaan tykkääjät listalle
@@ -71,7 +74,7 @@ public class LikeController {
 			recipe.setLikes(likes); // asetetaan lista reseptille
 			recipeRepository.save(recipe); // viedään tietokantaan
 		}
-		// lisää reseptin käyttäjän tykättyihin resepteihin
+		// lisätään resepti käyttäjän tykättyihin resepteihin
 		List<Recipe> likedRecipes = new ArrayList<Recipe>(); // luodaan lista tykkäyksille
 		if (user.getLikedRecipes() != null) {
 			likedRecipes = user.getLikedRecipes(); // jos repositoryn lista ei tyhjä niin haetaan käyttäjän tykkäykset listalle
@@ -81,10 +84,13 @@ public class LikeController {
 			user.setLikedRecipes(likedRecipes); // asetetaan lista käyttäjälle
 			userRepository.save(user); // viedään tietokantaan
 		}
-		return "redirect:/recipe/" + recipe.getId();
+		
+		return "redirect:/recipe/" + recipe.getId(); // palataan reseptinäkymään
 	}
 	
-	// poistaa tykkäyksen
+	// tykkäyksen poisto, POST
+	// myös poisto tehdään molemmissa päissä, eli
+	// user poistetaan recipen likes-attribuutista, ja recipe userin likedRecipes-attribuutista
 	@PostMapping("/deletelike/{recipeid}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
 	public String deleteLike(@PathVariable("recipeid") Long recipeid) {

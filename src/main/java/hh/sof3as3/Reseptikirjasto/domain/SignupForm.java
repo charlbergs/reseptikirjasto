@@ -5,16 +5,18 @@ import jakarta.validation.constraints.Size;
 
 public class SignupForm {
 	
+	// uuden käyttäjän rekisteröinnissä käytettävä javaluokka
+	
 	@NotEmpty
 	@Size(min=6, max=20)
 	private String username = "";
 	
 	@NotEmpty
-	@Size(min=4, max=30) // todo: muuta min isommaksi
+	@Size(min=4, max=30)
 	private String password = "";
 	
 	@NotEmpty
-	@Size(min=4, max=30) // todo: muuta min isommaksi
+	@Size(min=4, max=30)
 	private String passwordCheck = "";
 	
 	@NotEmpty

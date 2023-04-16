@@ -25,7 +25,7 @@ public class CategoryController {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-	// kategorianäkymä: listaus ja lisäyslomake
+	// kategorianäkymä, GET: listaus ja lisäyslomake samassa
 	@GetMapping("/categorylist")
 	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String getCategories(Model model) {
@@ -37,19 +37,21 @@ public class CategoryController {
 		return "categorylist";
 	}
 	
-	// kategorian muokkaus: post
+	// kategorian lisäys, POST
 	@PostMapping("/addcategory")
 	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String addCategory(@Valid @ModelAttribute("newCategory") Category category, BindingResult bindingResult, Model model) {
+		// tarkistetaan validointi: jos virheitä, palataan takaisin lomakkeen täyttöön
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("categories", categoryRepository.findAll()); // välitetään kategorialistaus uudelleen, muuten ei näy
+			model.addAttribute("categories", categoryRepository.findAll()); // välitetään kategorialistaus uudelleen, muuten taulukko tyhjä
 			return "categorylist";
 		}
+		// jos ei virheitä, tallennetaan ja siirrytään takaisin listaukseen
 		categoryRepository.save(category);
 		return "redirect:/categorylist";
 	}
 	
-	// kategorian muokkaus: get
+	// kategorian muokkaus, GET: kutsuu erillistä muokkauslomaketta
 	@GetMapping("/editcategory/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String editCategory(@PathVariable("id") Long id, Model model) {
@@ -57,20 +59,22 @@ public class CategoryController {
 		return "categoryform";
 	}
 	
-	// kategorian muokkaus: post
+	// kategorian muokkaus, POST
 	@PostMapping("/savecategory")
 	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult bindingResult) {
+		// validointi: jos virheitä, palataan takaisin lomakkeen täyttöön
 		if (bindingResult.hasErrors()) {
 			return "categoryform";
 		}
+		// jos ei virheitä, tallennetaan ja siirrytään takaisin listaukseen
 		categoryRepository.save(category);
 		return "redirect:/categorylist";
 	}
 	
-	// kategorian poistaminen
+	// kategorian poistaminen, GET
 	@GetMapping("/deletecategory/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')") // vain admin
 	public String deleteCategory(@PathVariable("id") Long id) {
 		categoryRepository.deleteById(id);
 		return "redirect:/categorylist";

@@ -32,7 +32,7 @@ public class User {
 	
 	// salasana encryptattuna
 	@Column(name="password", nullable=false)
-	@JsonIgnore // piilottaa salasanan kaikissa rest-pyynnöissä (myös data rest)
+	@JsonIgnore // piilottaa salasanan kaikissa rest-pyynnöissä (myös autogeneroidut data rest -pyynnöt)
 	private String passwordHash;
 	
 	// käyttäjärooli
@@ -48,7 +48,7 @@ public class User {
 	private List<Comment> myComments;
 	
 	// viiteavainattribuutti tykätyille resepteille
-	@JsonIgnore
+	@JsonIgnore // blokataan jotta vältetään loputon loop
 	@ManyToMany(mappedBy = "likes")
 	private List<Recipe> likedRecipes;
 	
