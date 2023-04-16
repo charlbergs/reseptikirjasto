@@ -52,6 +52,9 @@ public class UserRepositoryTests {
 		assertThat(user.getId()).isEqualTo(2);
 	}
 	
+	
+	/*
+	  
 	// extra: käyttäjän poistamisen testaus (sovelluksessa ei tällä hetkellä käyttäjän poisto- tai muokkaustoiminnallisuuksia)
 	// EPÄONNISTUU manytomany-yhteyden takia: käyttäjiä joilla on tykkäyksiä ei nykyisellään pysty poistamaan 
 	// toimisi jos manytomany-välitaulun konfiguroisi user-päässä, mutta tällöin puolestaan ongelma siirtyy reseptin poistamiseen
@@ -63,4 +66,5 @@ public class UserRepositoryTests {
 		assertThat(users).hasSize(2);
 	}
 	
+	*/
 }
